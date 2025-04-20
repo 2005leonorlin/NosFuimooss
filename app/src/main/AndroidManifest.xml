@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,11 +16,56 @@
         android:theme="@style/Theme.NosFuimooss"
         tools:targetApi="31">
         <activity
-            android:name=".UsuarioNoLogeadoInicioActivity"
+            android:name="com.example.nosfuimooss.DetalleVuelos"
             android:exported="false" />
-
         <activity
-            android:name=".WelcomActivity"
+            android:name="com.example.nosfuimooss.meFaltaHacer.VuelosActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.PlanesActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.MonumentosActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.ActividadesActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.HotelActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.BuscadorActivity"
+            android:exported="false" />
+       
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.Calendario"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.navegador.Favoritos"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.ReservarHotel"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.meFaltaHacer.ElegirVuelo"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.UsuarioLogeadoInicial"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.sesion.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.sesion.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.nologeado.UsuarioNoLogeadoInicioActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.nologeado.WelcomActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,13 +1,13 @@
-package com.example.NosFuimooss
+package com.example.nosfuimooss.nologeado
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.ImageView
+
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.NosFuimooss.R
 import com.example.NosFuimooss.databinding.ActivityWelcomBinding
 import kotlin.random.Random
 
@@ -38,30 +38,26 @@ class WelcomActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         enableEdgeToEdge()
 
-        // Inicializar View Binding
         binding = ActivityWelcomBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // Selecciona aleatoriamente 3 imágenes
         selectRandomImages()
-
-        // Mostrar la primera imagen al inicio
         binding.imageViewWelcome.setImageResource(selectedImages[currentIndex])
 
-        // Configurar el botón para cambiar las imágenes
         binding.buttonNext.setOnClickListener {
             currentIndex++
             if (currentIndex < selectedImages.size) {
                 binding.imageViewWelcome.setImageResource(selectedImages[currentIndex])
             } else {
-                // Cuando se han mostrado todas las imágenes, inicia la actividad principal
+
                 startActivity(Intent(this, UsuarioNoLogeadoInicioActivity::class.java))
                 finish()
             }
         }
 
-        // Mantener la configuración de insets para Edge-to-Edge
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -69,7 +65,7 @@ class WelcomActivity : AppCompatActivity() {
         }
     }
 
-    // Función para seleccionar aleatoriamente 3 imágenes
+
     private fun selectRandomImages() {
         val randomIndexes = mutableSetOf<Int>()
         while (randomIndexes.size < 3) {
@@ -77,7 +73,7 @@ class WelcomActivity : AppCompatActivity() {
             randomIndexes.add(randomIndex)
         }
 
-        // Asignar las imágenes seleccionadas a la lista
+
         selectedImages.addAll(randomIndexes.map { images[it] })
     }
 }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NosFuimooss</string>
+    <string name="textview">TextView</string>
+    <string name="carousel_image_desc">Imagen del carrusel</string>
 </resources>
