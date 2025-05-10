@@ -13,11 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nosfuimooss.sesion.LoginActivity
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.CategoriaAdapter
-
 import com.example.nosfuimooss.Adapter.DestinoAdapter
+import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.model.Categoria
-import com.google.firebase.firestore.FirebaseFirestore
-import com.example.nosfuimooss.model.Destino
+import com.example.nosfuimooss.model.Vuelo
 
 
 
@@ -30,8 +29,8 @@ class UsuarioNoLogeadoInicioActivity : AppCompatActivity() {
     private lateinit var recyclerCategorias: RecyclerView
     private lateinit var recyclerDestinos: RecyclerView
     private val favoritosIds: List<String> = emptyList()
+    private var destinosActuales: List<Vuelo> = emptyList()
 
-    private val db = FirebaseFirestore.getInstance()
 
     // Lista fija de categorías
     private val categoriasFijas = listOf(
@@ -73,27 +72,24 @@ class UsuarioNoLogeadoInicioActivity : AppCompatActivity() {
 
 
     private fun fetchDestinosFiltrados(nombreCategoria: String) {
-        db.collection("Viajes")
-            .whereArrayContains("categoria", nombreCategoria)
-            .get()
-            .addOnSuccessListener { result ->
-                val destinos = result.map { document ->
-                    val principal = document.getString("principal") ?: ""
-                    val imagenes = document.get("imagenes") as? List<String> ?: emptyList()
-                    val imagenPrincipal = if (principal.isNotEmpty()) principal else imagenes.firstOrNull() ?: ""
+        val call = RetrofitClient.vueloApiService.getVuelosByCategoria(nombreCategoria)
 
-                    Destino(
-                        nombre = document.getString("nombre") ?: "",
-                        descripcion = document.getString("descripcion") ?: "",
-                        categoria = document.get("categoria") as? List<String> ?: emptyList(),
-                        imagenes = listOf(imagenPrincipal), // Prioriza la imagen principal
-                        bandera = document.getString("bandera") ?: ""
-                    )
+        call.enqueue(object : retrofit2.Callback<List<Vuelo>> {
+            override fun onResponse(
+                call: retrofit2.Call<List<Vuelo>>,
+                response: retrofit2.Response<List<Vuelo>>
+            ) {
+                if (response.isSuccessful) {
+                    destinosActuales = response.body() ?: emptyList()
+                    destinoAdapter.updateFavoritos(destinosActuales, favoritosIds)
+                } else {
+                    Toast.makeText(this@UsuarioNoLogeadoInicioActivity, "Error en respuesta de API", Toast.LENGTH_SHORT).show()
                 }
-                destinoAdapter.updateFavoritos(destinos, favoritosIds)
             }
-            .addOnFailureListener { exception ->
-                Toast.makeText(this, "Error al cargar destinos: ${exception.message}", Toast.LENGTH_SHORT).show()
+
+            override fun onFailure(call: retrofit2.Call<List<Vuelo>>, t: Throwable) {
+                Toast.makeText(this@UsuarioNoLogeadoInicioActivity, "Error al conectar con API", Toast.LENGTH_SHORT).show()
             }
+        })
     }
 }

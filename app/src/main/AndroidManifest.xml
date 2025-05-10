@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,12 +16,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NosFuimooss"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.example.nosfuimooss.DetalleVuelos"
+            android:name="com.example.nosfuimooss.boleto.DetalleBoletosActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.VuelosActivity"
+            android:name=".ItemVueloDisponibleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MapaActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.usuariologeado.DetalleVuelos"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.boleto.VuelosActivity"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.meFaltaHacer.PlanesActivity"
@@ -34,9 +46,8 @@
             android:name="com.example.nosfuimooss.meFaltaHacer.HotelActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.BuscadorActivity"
+            android:name="com.example.nosfuimooss.navegador.BuscadorActivity"
             android:exported="false" />
-       
         <activity
             android:name="com.example.nosfuimooss.meFaltaHacer.Calendario"
             android:exported="false" />
@@ -47,13 +58,13 @@
             android:name="com.example.nosfuimooss.navegador.Favoritos"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.ReservarHotel"
+            android:name="com.example.nosfuimooss.hotel.ReservarHotel"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.meFaltaHacer.ElegirVuelo"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.UsuarioLogeadoInicial"
+            android:name="com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.sesion.RegisterActivity"

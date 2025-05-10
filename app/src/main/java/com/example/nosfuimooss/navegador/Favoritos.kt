@@ -10,31 +10,35 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.DestinoAdapter
-import com.example.nosfuimooss.DetalleVuelos
-import com.example.nosfuimooss.UsuarioLogeadoInicial
-import com.example.nosfuimooss.model.Destino
+import com.example.nosfuimooss.usuariologeado.DetalleVuelos
+import com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial
+import com.example.nosfuimooss.api.RetrofitClient
+import com.example.nosfuimooss.model.Vuelo
+import com.example.nosfuimooss.model.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.FirebaseDatabase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class Favoritos : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var destinoAdapter: DestinoAdapter
-    private var favoritosIds: MutableList<String> = mutableListOf()
-    private var destinosFavoritos: List<Destino> = emptyList()
+
     private lateinit var recyclerDestinos: RecyclerView
+    private lateinit var destinoAdapter: DestinoAdapter
+
+    // Lista en memoria de IDs y de objetos Destino
+    private val favoritosIds = mutableListOf<String>()
+    private var destinosFavoritos: List<Vuelo> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_favoritos)
 
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
-
         recyclerDestinos = findViewById(R.id.recycler_favoritos)
         recyclerDestinos.layoutManager = GridLayoutManager(this, 2)
 
+        // Inicializa el adapter con listas vacías
         destinoAdapter = DestinoAdapter(
             destinosFavoritos,
             favoritosIds,
@@ -48,132 +52,110 @@ class Favoritos : AppCompatActivity() {
             }
         )
         recyclerDestinos.adapter = destinoAdapter
-
-        loadUserInfo()
-        fetchFavoritos()
+        loadUserData()
         setupNavigation()
     }
 
-    private fun loadUserInfo() {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            val userNameText = findViewById<TextView>(R.id.user_name_text)
-            val database = com.google.firebase.database.FirebaseDatabase.getInstance().reference
-                .child("users")
-                .child(userId)
+    override fun onResume() {
+        super.onResume()
+        cargarFavoritos()  // carga desde Firebase y dentro del success llama a fetchDestinosFavoritos
+    }
+    private fun loadUserData() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userNameText = findViewById<TextView>(R.id.user_name_text)
 
-            database.get().addOnSuccessListener { snapshot ->
-                val user = snapshot.getValue(com.example.nosfuimooss.model.User::class.java)
-                if (user != null) {
-                    userNameText.text = " ${user.name} "
-                } else {
-                    userNameText.text = "Usuario"
-                }
-            }.addOnFailureListener {
-                userNameText.text = "Usuario"
+        FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(userId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val user = snapshot.getValue(User::class.java)
+                userNameText.text = if (user?.name?.isNotBlank() == true)
+                    "${user.name}"
+                else
+                    "Hola, usuario"
             }
-        }
+            .addOnFailureListener {
+                userNameText.text = "Hola, usuario"
+            }
     }
 
-    private fun fetchFavoritos() {
-        val userId = auth.currentUser?.uid ?: return
 
-        // Fetch favorite IDs
-        firestore.collection("users").document(userId)
-            .collection("favorites")
-            .get()
-            .addOnSuccessListener { result ->
-                favoritosIds.clear()
-                val favoriteIds = result.documents.map { it.id }
-                favoritosIds.addAll(favoriteIds)
+    private fun cargarFavoritos() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val ref = FirebaseDatabase.getInstance()
+            .reference
+            .child("users")
+            .child(userId)
+            .child("favorites")
 
-                if (favoritosIds.isEmpty()) {
-                    // Show empty state or message
-                    Toast.makeText(this, "No tienes favoritos guardados", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Fetch destination details for each favorite
-                    fetchDestinosFavoritos(favoritosIds)
-                }
+        ref.get().addOnSuccessListener { snap ->
+            favoritosIds.clear()
+            snap.children.forEach { favoritosIds.add(it.key!!) }
+
+            if (favoritosIds.isEmpty()) {
+                Toast.makeText(this, "No tienes favoritos guardados", Toast.LENGTH_SHORT).show()
+                destinoAdapter.updateFavoritos(emptyList(), favoritosIds)
+            } else {
+                fetchDestinosFavoritos(favoritosIds)
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error al cargar favoritos: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Error al cargar favoritos", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun fetchDestinosFavoritos(ids: List<String>) {
-        val destinosTemp = mutableListOf<Destino>()
-        var loadedCount = 0
+        val temp = mutableListOf<Vuelo>()
+        var loaded = 0
 
         ids.forEach { id ->
-            firestore.collection("Viajes").document(id)
-                .get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        val destino = Destino(
-                            id = document.id,
-                            nombre = document.getString("nombre") ?: "",
-                            descripcion = document.getString("descripcion") ?: "",
-                            categoria = document.get("categoria") as? List<String> ?: emptyList(),
-                            imagenes = (document.get("imagenes") as? List<String>) ?: emptyList(),
-                            bandera = document.getString("bandera") ?: ""
-                        )
-                        destinosTemp.add(destino)
+            RetrofitClient.vueloApiService.getVueloById(id)
+                .enqueue(object : Callback<Vuelo> {
+                    override fun onResponse(call: Call<Vuelo>, resp: Response<Vuelo>) {
+                        resp.body()?.let { temp.add(it) }
+                        loaded++
+                        if (loaded == ids.size) {
+                            destinosFavoritos = temp
+                            destinoAdapter.updateFavoritos(destinosFavoritos, favoritosIds)
+                        }
                     }
-
-                    loadedCount++
-                    if (loadedCount == ids.size) {
-                        // All destinations loaded
-                        destinosFavoritos = destinosTemp
-                        destinoAdapter.updateFavoritos(destinosFavoritos, favoritosIds)
+                    override fun onFailure(call: Call<Vuelo>, t: Throwable) {
+                        loaded++
+                        if (loaded == ids.size) {
+                            destinosFavoritos = temp
+                            destinoAdapter.updateFavoritos(destinosFavoritos, favoritosIds)
+                        }
                     }
-                }
-                .addOnFailureListener { e ->
-                    loadedCount++
-                    Toast.makeText(this, "Error al cargar destino: ${e.message}", Toast.LENGTH_SHORT).show()
-
-                    if (loadedCount == ids.size) {
-                        // All destinations attempted
-                        destinosFavoritos = destinosTemp
-                        destinoAdapter.updateFavoritos(destinosFavoritos, favoritosIds)
-                    }
-                }
+                })
         }
     }
 
-    private fun toggleFavoriteInFavoritos(destino: Destino) {
-        val userId = auth.currentUser?.uid ?: return
-        val favoritoRef = firestore.collection("users").document(userId).collection("favorites").document(destino.id)
+    private fun toggleFavoriteInFavoritos(vuelo: Vuelo) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val ref = FirebaseDatabase.getInstance()
+            .reference
+            .child("users")
+            .child(userId)
+            .child("favorites")
+            .child(vuelo.id)
 
-        if (favoritosIds.contains(destino.id)) {
-
-            favoritoRef.delete()
-            favoritosIds.remove(destino.id)
+        if (favoritosIds.contains(vuelo.id)) {
+            ref.removeValue().addOnSuccessListener {
+                Toast.makeText(this, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
+                cargarFavoritos()
+            }
         } else {
-
-            favoritoRef.set(destino)
-            favoritosIds.add(destino.id)
+            ref.setValue(true).addOnSuccessListener {
+                Toast.makeText(this, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
+                cargarFavoritos()
+            }
         }
-
-
-        destinoAdapter.toggleFavorito(destino.id)
-
-
-        destinoAdapter.updateFavoritos(destinosFavoritos, favoritosIds)
     }
 
     private fun setupNavigation() {
-        // Setup bottom navigation
         findViewById<ImageView>(R.id.nav_home).setOnClickListener {
             startActivity(Intent(this, UsuarioLogeadoInicial::class.java))
             finish()
         }
-
-
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        fetchFavoritos()
     }
 }

@@ -1,4 +1,4 @@
-package com.example.nosfuimooss
+package com.example.nosfuimooss.usuariologeado
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,17 +15,23 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.NosFuimooss.R
+import com.example.nosfuimooss.hotel.ReservarHotel
+import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.meFaltaHacer.ActividadesActivity
-import com.example.nosfuimooss.meFaltaHacer.BuscadorActivity
+import com.example.nosfuimooss.navegador.BuscadorActivity
 import com.example.nosfuimooss.meFaltaHacer.Calendario
 import com.example.nosfuimooss.navegador.Favoritos
 import com.example.nosfuimooss.meFaltaHacer.HotelActivity
 import com.example.nosfuimooss.meFaltaHacer.MonumentosActivity
 import com.example.nosfuimooss.meFaltaHacer.PlanesActivity
 import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
-import com.example.nosfuimooss.meFaltaHacer.VuelosActivity
+import com.example.nosfuimooss.boleto.VuelosActivity
+import com.example.nosfuimooss.model.Vuelo
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.FirebaseDatabase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DetalleVuelos : AppCompatActivity() {
     private lateinit var userNameText: TextView
@@ -36,7 +42,7 @@ class DetalleVuelos : AppCompatActivity() {
     private lateinit var imageCarousel: ViewPager2
     private lateinit var indicatorLayout: LinearLayout
 
-    private val db = FirebaseFirestore.getInstance()
+
     private val auth = FirebaseAuth.getInstance()
 
     private var destinationId: String? = null
@@ -118,54 +124,38 @@ class DetalleVuelos : AppCompatActivity() {
     }
 
     private fun loadDestinationData(destId: String) {
-        db.collection("Viajes").document(destId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    // Load basic information
-                    val destName = document.getString("nombre") ?: ""
-                    val description = document.getString("descripcion") ?: ""
-                    val flagUrl = document.getString("bandera") ?: ""
+        val call = RetrofitClient.vueloApiService.getVueloById(destId)
 
-                    // Set data to UI
-                    destinationNameText.text = destName.uppercase()
-                    descriptionText.text = description
+        call.enqueue(object : Callback<Vuelo> {
+            override fun onResponse(call: Call<Vuelo>, response: Response<Vuelo>) {
+                if (response.isSuccessful) {
+                    val destino = response.body()
+                    if (destino != null) {
+                        destinationNameText.text = destino.nombre.uppercase()
+                        descriptionText.text = destino.descripcion
 
-                    // Load flag image
-                    Glide.with(this)
-                        .load(flagUrl)
-                        .into(flagIcon)
+                        Glide.with(this@DetalleVuelos)
+                            .load(destino.bandera)
+                            .into(flagIcon)
 
-                    // Check if destination is favorite
-                    checkIfFavorite(destId)
-
-                    // Load images for carousel
-                    loadDestinationImages(destId)
-                }
-            }
-            .addOnFailureListener { e ->
-                // Handle error
-                println("Error loading destination data: ${e.message}")
-            }
-    }
-
-    private fun loadDestinationImages(destId: String) {
-        db.collection("Viajes").document(destId)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val images = document.get("imagenes") as? List<String>
-                    if (!images.isNullOrEmpty()) {
                         imagesList.clear()
-                        imagesList.addAll(images)
+                        imagesList.addAll(destino.imagenes)
                         setupImageCarousel()
+
+                        checkIfFavorite(destino.id)
                     }
+                } else {
+                    Toast.makeText(this@DetalleVuelos, "No se pudo cargar el destino", Toast.LENGTH_SHORT).show()
                 }
             }
-            .addOnFailureListener { e ->
-                println("Error al cargar las imágenes: ${e.message}")
+
+            override fun onFailure(call: Call<Vuelo>, t: Throwable) {
+                Toast.makeText(this@DetalleVuelos, "Error de conexión", Toast.LENGTH_SHORT).show()
             }
+        })
     }
+
+
 
     private fun setupImageCarousel() {
         val adapter = ImageCarouselAdapter(imagesList)
@@ -214,15 +204,16 @@ class DetalleVuelos : AppCompatActivity() {
     }
 
     private fun checkIfFavorite(destId: String) {
-        auth.currentUser?.let { user ->
-            db.collection("users").document(user.uid)
-                .collection("favorites")
-                .document(destId)
-                .get()
-                .addOnSuccessListener { document ->
-                    isFavorite = document.exists()
-                    updateFavoriteButton()
-                }
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val ref = FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(userId)
+            .child("favorites")
+            .child(destId)
+
+        ref.get().addOnSuccessListener { snapshot ->
+            isFavorite = snapshot.exists()
+            updateFavoriteButton()
         }
     }
 
@@ -238,34 +229,24 @@ class DetalleVuelos : AppCompatActivity() {
     }
 
     private fun toggleFavorite() {
-        val userId = auth.currentUser?.uid ?: return
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val destId = destinationId ?: return
+        val ref = FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(userId)
+            .child("favorites")
+            .child(destId)
 
         if (isFavorite) {
-
-            db.collection("users").document(userId)
-                .collection("favorites")
-                .document(destId)
-                .delete()
-                .addOnSuccessListener {
-                    isFavorite = false
-                    updateFavoriteButton()
-                }
+            ref.removeValue().addOnSuccessListener {
+                isFavorite = false
+                updateFavoriteButton()
+            }
         } else {
-            // Add to favorites
-            val favoriteData = hashMapOf(
-                "destinationId" to destId,
-                "addedAt" to System.currentTimeMillis()
-            )
-
-            db.collection("users").document(userId)
-                .collection("favorites")
-                .document(destId)
-                .set(favoriteData)
-                .addOnSuccessListener {
-                    isFavorite = true
-                    updateFavoriteButton()
-                }
+            ref.setValue(true).addOnSuccessListener {
+                isFavorite = true
+                updateFavoriteButton()
+            }
         }
     }
 
@@ -286,7 +267,8 @@ class DetalleVuelos : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.hotel_button).setOnClickListener {
-            val intent = Intent(this, HotelActivity::class.java)
+            val intent = Intent(this, ReservarHotel::class.java)
+            intent.putExtra("ID_VUELO", destinationId)
             startActivity(intent)
         }
 
@@ -308,9 +290,12 @@ class DetalleVuelos : AppCompatActivity() {
 
         findViewById<View>(R.id.flights_button).setOnClickListener {
             val intent = Intent(this, VuelosActivity::class.java)
+            // usa el nombre real del destino, no el ID
+            val destinoSeleccionado = destinationNameText.text.toString().lowercase().capitalize()
+            intent.putExtra("destino", destinoSeleccionado)
             startActivity(intent)
         }
-        // Bottom navigation
+
         findViewById<View>(R.id.nav_home_container).setOnClickListener {
             navigateToMain()
         }
@@ -331,7 +316,7 @@ class DetalleVuelos : AppCompatActivity() {
             navigateToProfile()
         }
 
-        // Top navigation
+
         findViewById<View>(R.id.ic_search).setOnClickListener {
             navigateToSearch()
         }

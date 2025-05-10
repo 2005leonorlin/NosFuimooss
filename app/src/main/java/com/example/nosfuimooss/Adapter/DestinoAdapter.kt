@@ -8,14 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.model.Destino
+import com.example.nosfuimooss.model.Vuelo
 
 
 class DestinoAdapter(
-    private var destinos: List<Destino>,
+    private var vuelos: List<Vuelo>,
     private var favoritosIds: List<String> = emptyList(),
-    private val onItemClick: (Destino) -> Unit = {},
-    private val onFavoriteClick: (Destino) -> Unit = {}
+    private val onItemClick: (Vuelo) -> Unit = {},
+    private val onFavoriteClick: (Vuelo) -> Unit = {}
 
 ) : RecyclerView.Adapter<DestinoAdapter.DestinoViewHolder>() {
 
@@ -32,7 +32,7 @@ class DestinoAdapter(
                 if (position != RecyclerView.NO_POSITION) {
                     // Siempre llamamos a onItemClick, y dejamos que la actividad
                     // se encargue de verificar si el usuario está autenticado
-                    onItemClick(destinos[position])
+                    onItemClick(vuelos[position])
                 }
             }
 
@@ -40,7 +40,7 @@ class DestinoAdapter(
             favoriteButton.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    onFavoriteClick(destinos[position])
+                    onFavoriteClick(vuelos[position])
                 }
             }
         }
@@ -54,7 +54,7 @@ class DestinoAdapter(
     }
 
     override fun onBindViewHolder(holder: DestinoViewHolder, position: Int) {
-        val destino = destinos[position]
+        val destino = vuelos[position]
 
         if (favoritosIds.contains(destino.id)) {
             holder.favoriteButton.setImageResource(R.drawable.ic_corazon_completo)
@@ -78,15 +78,15 @@ class DestinoAdapter(
 
     }
 
-    override fun getItemCount() = destinos.size
+    override fun getItemCount() = vuelos.size
 
-    fun updateFavoritos(newDestinos: List<Destino>, newFavoritos: List<String>) {
-        destinos = newDestinos
+    fun updateFavoritos(newVuelos: List<Vuelo>, newFavoritos: List<String>) {
+        vuelos = newVuelos
         favoritosIds = newFavoritos.toMutableList()
         notifyDataSetChanged()
     }
     fun toggleFavorito(destinoId: String) {
-        val position = destinos.indexOfFirst { it.id == destinoId }
+        val position = vuelos.indexOfFirst { it.id == destinoId }
         if (position != -1) {
             if (favoritosIds.contains(destinoId)) {
                 favoritosIds = favoritosIds - destinoId

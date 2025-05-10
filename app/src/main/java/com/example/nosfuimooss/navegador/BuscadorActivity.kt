@@ -1,4 +1,4 @@
-package com.example.nosfuimooss.meFaltaHacer
+package com.example.nosfuimooss.navegador
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,23 +9,23 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nosfuimooss.DetalleVuelos
+import com.example.nosfuimooss.usuariologeado.DetalleVuelos
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.DestinoAdapter
-import com.example.nosfuimooss.model.Destino
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.nosfuimooss.model.Vuelo
+
 
 class BuscadorActivity : AppCompatActivity() {
     private lateinit var searchInput: EditText
     private lateinit var searchResults: RecyclerView
-    private lateinit var db: FirebaseFirestore
+
     private lateinit var adapter: DestinoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscador)
 
-        db = FirebaseFirestore.getInstance()
+
         searchInput = findViewById(R.id.search_input)
         searchResults = findViewById(R.id.search_results)
 
@@ -49,29 +49,24 @@ class BuscadorActivity : AppCompatActivity() {
     private fun buscarDestinos(texto: String) {
         if (texto.isEmpty()) return
 
-        db.collection("Viajes")
-            .orderBy("nombre")
-            .startAt(texto)
-            .endAt(texto + "\uf8ff")
-            .get()
-            .addOnSuccessListener { result ->
-                val destinos = result.map { doc ->
-                    Destino(
-                        id = doc.id,
-                        nombre = doc.getString("nombre") ?: "",
-                        descripcion = doc.getString("descripcion") ?: "",
-                        categoria = doc.get("categoria") as? List<String> ?: listOf(),
-                        imagenes = doc.get("imagenes") as? List<String> ?: listOf(),
-                        bandera = doc.getString("bandera") ?: ""
-                    )
-                }
-                adapter.updateFavoritos(
-                    destinos,emptyList()
+        val call = com.example.nosfuimooss.api.RetrofitClient.vueloApiService.searchVuelosByNombre(texto)
 
-                )
+        call.enqueue(object : retrofit2.Callback<List<Vuelo>> {
+            override fun onResponse(
+                call: retrofit2.Call<List<Vuelo>>,
+                response: retrofit2.Response<List<Vuelo>>
+            ) {
+                if (response.isSuccessful) {
+                    val destinos = response.body() ?: emptyList()
+                    adapter.updateFavoritos(destinos, emptyList())
+                } else {
+                    Toast.makeText(this@BuscadorActivity, "Error en búsqueda", Toast.LENGTH_SHORT).show()
+                }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error al buscar", Toast.LENGTH_SHORT).show()
+
+            override fun onFailure(call: retrofit2.Call<List<Vuelo>>, t: Throwable) {
+                Toast.makeText(this@BuscadorActivity, "Error al conectar con la API", Toast.LENGTH_SHORT).show()
             }
+        })
     }
 }

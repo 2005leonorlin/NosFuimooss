@@ -1,4 +1,4 @@
-package com.example.nosfuimooss
+package com.example.nosfuimooss.usuariologeado
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,27 +12,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.CategoriaAdapter
 import com.example.nosfuimooss.Adapter.DestinoAdapter
+import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.meFaltaHacer.Calendario
 import com.example.nosfuimooss.meFaltaHacer.ElegirVuelo
 import com.example.nosfuimooss.navegador.Favoritos
-import com.example.nosfuimooss.meFaltaHacer.ReservarHotel
+import com.example.nosfuimooss.meFaltaHacer.HotelActivity
 import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.model.Categoria
-import com.example.nosfuimooss.model.Destino
+import com.example.nosfuimooss.model.Vuelo
 import com.example.nosfuimooss.model.User
 import com.example.nosfuimooss.sesion.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class UsuarioLogeadoInicial : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
-
     private lateinit var categoriaAdapter: CategoriaAdapter
     private lateinit var destinoAdapter: DestinoAdapter
     private var favoritosIds: MutableList<String> = mutableListOf()
-    private var destinosActuales: List<Destino> = emptyList()
+    private var destinosActuales: List<Vuelo> = emptyList()
     private lateinit var recyclerCategorias: RecyclerView
     private lateinit var recyclerDestinos: RecyclerView
 
@@ -51,7 +52,7 @@ class UsuarioLogeadoInicial : AppCompatActivity() {
         setContentView(R.layout.activity_usuario_logeado_inicial)
 
         auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
+        fetchUserData()
 
         recyclerCategorias = findViewById(R.id.recycler_categorias)
         recyclerDestinos = findViewById(R.id.recycler_destinos)
@@ -107,7 +108,7 @@ class UsuarioLogeadoInicial : AppCompatActivity() {
         }
 
         findViewById<ImageView>(R.id.nav_moon).setOnClickListener {
-            startActivity(Intent(this, ReservarHotel::class.java))
+            startActivity(Intent(this, HotelActivity::class.java))
         }
 
         findViewById<ImageView>(R.id.nav_heart).setOnClickListener {
@@ -141,85 +142,82 @@ class UsuarioLogeadoInicial : AppCompatActivity() {
     }
 
     private fun fetchDestinosFiltrados(nombreCategoria: String) {
-        firestore.collection("Viajes")
-            .whereArrayContains("categoria", nombreCategoria)
-            .get()
-            .addOnSuccessListener { result ->
-                destinosActuales = result.map { document ->
-                    val id = document.id
-                    val principal = document.getString("principal") ?: ""
-                    val imagenes = document.get("imagenes") as? List<String> ?: emptyList()
-                    val imagenPrincipal = if (principal.isNotEmpty()) principal else imagenes.firstOrNull() ?: ""
+        val call = RetrofitClient.vueloApiService.getVuelosByCategoria(nombreCategoria)
 
-                    Destino(
-                        id = id,
-                        nombre = document.getString("nombre") ?: "",
-                        descripcion = document.getString("descripcion") ?: "",
-                        categoria = document.get("categoria") as? List<String> ?: emptyList(),
-                        imagenes = listOf(imagenPrincipal),
-                        bandera = document.getString("bandera") ?: ""
-                    )
+        call.enqueue(object : Callback<List<Vuelo>> {
+            override fun onResponse(
+                call: Call<List<Vuelo>>,
+                response: Response<List<Vuelo>>
+            ) {
+                if (response.isSuccessful) {
+                    destinosActuales = response.body() ?: emptyList()
+                    destinoAdapter.updateFavoritos(destinosActuales, favoritosIds)
+                } else {
+                    Toast.makeText(this@UsuarioLogeadoInicial, "Error cargando datos", Toast.LENGTH_SHORT).show()
                 }
+            }
 
-                destinoAdapter.updateFavoritos(destinosActuales, favoritosIds)
+            override fun onFailure(call: Call<List<Vuelo>>, t: Throwable) {
+                Toast.makeText(this@UsuarioLogeadoInicial, "Error de conexión", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { exception ->
-                Toast.makeText(this, "Error al cargar destinos: ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
+        })
+    }
+    private fun cargarFavoritos() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val ref = FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(userId)
+            .child("favorites")
+
+        ref.get().addOnSuccessListener { snap ->
+            favoritosIds.clear()
+            snap.children.forEach { favoritosIds.add(it.key!!) }
+            destinoAdapter.updateFavoritos(destinosActuales, favoritosIds)
+        }
     }
 
     private fun buscarDestinosPorNombre(nombre: String) {
-        firestore.collection("Viajes")
-            .get()
-            .addOnSuccessListener { result ->
-                val destinosFiltrados = result.mapNotNull { doc ->
-                    doc.getString("nombre")
-                        ?.takeIf { it.lowercase().contains(nombre.lowercase()) }
-                        ?.let { nombreOk ->
-                            Destino(
-                                id          = doc.id,
-                                nombre      = nombreOk,
-                                descripcion = doc.getString("descripcion") ?: "",
-                                categoria   = doc.get("categoria") as? List<String> ?: emptyList(),
-                                imagenes    = listOf(
-                                    doc.getString("principal")
-                                        .takeIf { !it.isNullOrEmpty() }
-                                        ?: (doc.get("imagenes") as? List<String>).orEmpty().firstOrNull()
-                                            .orEmpty()
-                                ),
-                                bandera     = doc.getString("bandera") ?: ""
-                            )
-                        }
+        val call = RetrofitClient.vueloApiService.searchVuelosByNombre(nombre)
+
+        call.enqueue(object : Callback<List<Vuelo>> {
+            override fun onResponse(
+                call: Call<List<Vuelo>>,
+                response: Response<List<Vuelo>>
+            ) {
+                if (response.isSuccessful) {
+                    val destinosFiltrados = response.body() ?: emptyList()
+                    destinoAdapter.updateFavoritos(destinosFiltrados, favoritosIds)
+                } else {
+                    Toast.makeText(this@UsuarioLogeadoInicial, "Error en búsqueda", Toast.LENGTH_SHORT).show()
                 }
+            }
 
-                destinoAdapter.updateFavoritos(destinosFiltrados, favoritosIds)
+            override fun onFailure(call: Call<List<Vuelo>>, t: Throwable) {
+                Toast.makeText(this@UsuarioLogeadoInicial, "Error al buscar", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error buscando destinos", Toast.LENGTH_SHORT).show()
-            }
+        })
     }
+    private fun toggleFavorite(vuelo: Vuelo) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val ref = FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(userId)
+            .child("favorites")
+            .child(vuelo.id)
 
-    private fun toggleFavorite(destino: Destino) {
-        val userId = auth.currentUser?.uid ?: return
-        val favRef = firestore.collection("users").document(userId).collection("favorites").document(destino.id)
-
-        if (favoritosIds.contains(destino.id)) {
-            // Eliminar de favoritos
-            favRef.delete().addOnSuccessListener {
-                favoritosIds.remove(destino.id)
-                destinoAdapter.updateFavoritos(destinosActuales, favoritosIds)
-            }
+        if (favoritosIds.contains(vuelo.id)) {
+            ref.removeValue()
         } else {
-            // Añadir a favoritos
-            val data = mapOf(
-                "destinationId" to destino.id,
-                "addedAt" to System.currentTimeMillis()
-            )
-            favRef.set(data).addOnSuccessListener {
-                favoritosIds.add(destino.id)
-                destinoAdapter.updateFavoritos(destinosActuales, favoritosIds)
-            }
+            ref.setValue(true)
         }
+
+        // Actualiza UI localmente
+        cargarFavoritos()
     }
+    override fun onResume() {
+        super.onResume()
+        cargarFavoritos()
+    }
+
 
 }

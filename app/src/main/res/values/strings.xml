@@ -2,4 +2,27 @@
     <string name="app_name">NosFuimooss</string>
     <string name="textview">TextView</string>
     <string name="carousel_image_desc">Imagen del carrusel</string>
+    <string name="clear">clear</string>
+    <string name="ingrese_destino">ingresar destino</string>
+    <string name="vuelos">vuelos</string>
+    <string name="alojamiento">alojamiento</string>
+    <string name="fecha_de_entrada">Fecha de Entrada:</string>
+    <string name="fecha_de_salida">Fecha de Salida:</string>
+    <string name="fecha_por_defecto" />
+    <string name="buscar">BUSCAR</string>
+    <string name="ordenar">Ordenar</string>
+    <string name="filtrar">Filtrar</string>
+    <string name="result_count_placeholder" />
+    <string name="habitaciones">Habitaciones</string>
+    <string name="ninos">Niños</string>
+    <string name="adultos">Adultos</string>
+    <string name="hotel_image" />
+    <string name="por_noche">Por noche</string>
+    <string name="disponible">Disponible</string>
+    <string name="no_disponible">No disponible</string>
+    <string name="decrease">decrease</string>
+    <string name="increase">increase</string>
+    <string name="cancelacion_gratuita" />
+    <string name="favorite" />
+
 </resources>

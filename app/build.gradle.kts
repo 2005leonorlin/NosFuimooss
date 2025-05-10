@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -56,6 +57,12 @@ dependencies {
     implementation (libs.kotlinx.coroutines.android)
 
     implementation(libs.firebase.firestore.ktx)
+    // Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    //openstreetmap
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.osmdroid.android)
 
 
 

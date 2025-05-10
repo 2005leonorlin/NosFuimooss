@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="com.example.nosfuimooss.DetalleVuelos">
+    tools:context="com.example.nosfuimooss.usuariologeado.DetalleVuelos">
 
     <!-- Top Navigation Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -246,7 +246,7 @@
                 android:layout_height="60dp"
                 app:cardCornerRadius="30dp"
                 app:cardElevation="2dp">
-
+0
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
