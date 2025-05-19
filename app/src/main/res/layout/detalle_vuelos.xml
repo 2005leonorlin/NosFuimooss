@@ -246,7 +246,7 @@
                 android:layout_height="60dp"
                 app:cardCornerRadius="30dp"
                 app:cardElevation="2dp">
-0
+                0
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -388,8 +388,8 @@
                 app:cardElevation="2dp">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_avion" />
             </androidx.cardview.widget.CardView>
@@ -424,8 +424,8 @@
 
             <ImageView
                 android:id="@+id/nav_home"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="Inicio"
                 android:src="@drawable/ic_casa" />
         </LinearLayout>
@@ -440,8 +440,8 @@
 
             <ImageView
                 android:id="@+id/nav_flight"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="Vuelos"
                 android:src="@drawable/ic_avion" />
         </LinearLayout>
@@ -456,10 +456,10 @@
 
             <ImageView
                 android:id="@+id/nav_moon"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="Noches"
-                android:src="@drawable/ic_noche" />
+                android:src="@drawable/maleta_alternativa" />
         </LinearLayout>
 
         <LinearLayout
@@ -472,8 +472,8 @@
 
             <ImageView
                 android:id="@+id/nav_heart"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="Favoritos"
                 android:src="@drawable/ic_megusta" />
         </LinearLayout>
@@ -488,8 +488,8 @@
 
             <ImageView
                 android:id="@+id/nav_profile"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:contentDescription="Perfil"
                 android:src="@drawable/ic_usuario" />
         </LinearLayout>

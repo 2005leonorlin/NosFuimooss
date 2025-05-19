@@ -14,7 +14,7 @@ import com.example.nosfuimooss.model.Vuelo
 
 class VuelosAdapter(
     private var boletos: List<Boleto>,
-    private val vuelos: List<Vuelo>,
+    private var vuelos: List<Vuelo>,
     private val onClick: (Boleto) -> Unit
 ) : RecyclerView.Adapter<VuelosAdapter.VueloViewHolder>() {
 
@@ -51,6 +51,10 @@ class VuelosAdapter(
         }
 
         holder.btnReservar.setOnClickListener { onClick(boleto) }
+    }
+    fun updateVuelos(nuevosVuelos: List<Vuelo>) {
+        this.vuelos = nuevosVuelos
+        notifyDataSetChanged()  // para que onBind vuelva a ejecutarse
     }
 
     fun updateData(nuevosBoletos: List<Boleto>) {

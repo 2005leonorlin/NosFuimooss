@@ -24,5 +24,7 @@
     <string name="increase">increase</string>
     <string name="cancelacion_gratuita" />
     <string name="favorite" />
+    <string name="foto_destino">foto</string>
+    <string name="Alojamiento">Hoteles\n</string>
 
 </resources>

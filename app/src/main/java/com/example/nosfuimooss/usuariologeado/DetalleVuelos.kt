@@ -21,7 +21,7 @@ import com.example.nosfuimooss.meFaltaHacer.ActividadesActivity
 import com.example.nosfuimooss.navegador.BuscadorActivity
 import com.example.nosfuimooss.meFaltaHacer.Calendario
 import com.example.nosfuimooss.navegador.Favoritos
-import com.example.nosfuimooss.meFaltaHacer.HotelActivity
+import com.example.nosfuimooss.navegador.MisViajesActivity
 import com.example.nosfuimooss.meFaltaHacer.MonumentosActivity
 import com.example.nosfuimooss.meFaltaHacer.PlanesActivity
 import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
@@ -52,7 +52,7 @@ class DetalleVuelos : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        setContentView(R.layout.activity_detalle_vuelos)
+        setContentView(R.layout.detalle_vuelos)
 
 
         // Initialize views
@@ -340,7 +340,7 @@ class DetalleVuelos : AppCompatActivity() {
     }
 
     private fun navigateToNights() {
-        val intent = Intent(this, HotelActivity::class.java)
+        val intent = Intent(this, MisViajesActivity::class.java)
         startActivity(intent)
     }
 

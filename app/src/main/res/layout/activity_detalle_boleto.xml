@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.nosfuimooss.boleto.DetalleBoletoActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FAFAFA"
+    android:padding="16dp">
+
+    <!-- Imagen del destino -->
+    <ImageView
+        android:id="@+id/ivDestino"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Imagen del destino"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/border_rounded"/>
+
+    <!-- Ruta -->
+    <TextView
+        android:id="@+id/tvRuta"
+        style="@style/TextTitle"
+        app:layout_constraintTop_toBottomOf="@id/ivDestino"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Tipo trayecto -->
+    <TextView
+        android:id="@+id/tvTipoTrayecto"
+        style="@style/TextSmall"
+        app:layout_constraintTop_toBottomOf="@id/tvRuta"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Fechas -->
+    <TextView
+        android:id="@+id/tvFechas"
+        style="@style/TextDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvTipoTrayecto"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Horarios -->
+    <TextView
+        android:id="@+id/tvHorarios"
+        style="@style/TextDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvFechas"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Clase -->
+    <TextView
+        android:id="@+id/tvClase"
+        style="@style/TextDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvHorarios"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Personas -->
+    <TextView
+        android:id="@+id/tvPersonas"
+        style="@style/TextDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvClase"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Tarifa -->
+    <TextView
+        android:id="@+id/tvTarifa"
+        style="@style/TextDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvPersonas"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Precio Total -->
+    <TextView
+        android:id="@+id/tvPrecioTotal"
+        style="@style/TextTotal"
+        android:textColor="@android:color/holo_green_dark"
+        app:layout_constraintTop_toBottomOf="@id/tvTarifa"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Botón Cancelar -->
+    <Button
+        android:id="@+id/btnCancelar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:backgroundTint="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/tvPrecioTotal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnComprar"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Botón Comprar -->
+    <Button
+        android:id="@+id/btnComprar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Comprar"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/tvPrecioTotal"
+        app:layout_constraintStart_toEndOf="@id/btnCancelar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

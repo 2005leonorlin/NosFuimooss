@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context="com.example.nosfuimooss.boleto.DatosPasajerosActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvTituloDatosPasajeros"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Datos de los pasajeros"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvRutaViaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Madrid → Barcelona"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvPrecioTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Precio total: 150 €"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:id="@+id/layoutPasajeros"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Aquí se añadirán dinámicamente los formularios para cada pasajero -->
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnComprar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:text="Comprar"
+            android:textAllCaps="false"
+            android:padding="12dp" />
+
+    </LinearLayout>
+</ScrollView>

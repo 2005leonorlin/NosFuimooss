@@ -16,7 +16,7 @@ import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.meFaltaHacer.Calendario
 import com.example.nosfuimooss.meFaltaHacer.ElegirVuelo
 import com.example.nosfuimooss.navegador.Favoritos
-import com.example.nosfuimooss.meFaltaHacer.HotelActivity
+import com.example.nosfuimooss.navegador.MisViajesActivity
 import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.model.Categoria
 import com.example.nosfuimooss.model.Vuelo
@@ -108,7 +108,7 @@ class UsuarioLogeadoInicial : AppCompatActivity() {
         }
 
         findViewById<ImageView>(R.id.nav_moon).setOnClickListener {
-            startActivity(Intent(this, HotelActivity::class.java))
+            startActivity(Intent(this, MisViajesActivity::class.java))
         }
 
         findViewById<ImageView>(R.id.nav_heart).setOnClickListener {

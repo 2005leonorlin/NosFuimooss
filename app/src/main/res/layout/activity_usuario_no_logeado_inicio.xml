@@ -144,8 +144,8 @@
 
         <ImageView
             android:id="@+id/nav_home"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_margin="10dp"
             android:contentDescription="Inicio"
             android:src="@drawable/ic_casa"
@@ -157,8 +157,8 @@
 
         <ImageView
             android:id="@+id/nav_flight"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_margin="10dp"
             android:contentDescription="Vuelos"
             android:src="@drawable/ic_avion"
@@ -169,11 +169,11 @@
 
         <ImageView
             android:id="@+id/nav_moon"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_margin="10dp"
             android:contentDescription="Noches"
-            android:src="@drawable/ic_noche"
+            android:src="@drawable/maleta_alternativa"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/nav_heart"
             app:layout_constraintStart_toEndOf="@+id/nav_flight"
@@ -181,8 +181,8 @@
 
         <ImageView
             android:id="@+id/nav_heart"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_margin="10dp"
             android:contentDescription="Favoritos"
             android:src="@drawable/ic_megusta"
@@ -193,8 +193,8 @@
 
         <ImageView
             android:id="@+id/nav_profile"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_margin="10dp"
             android:contentDescription="Perfil"
             android:src="@drawable/ic_usuario"

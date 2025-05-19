@@ -5,8 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nosfuimooss.navegador.Favoritos">
+    tools:context="com.example.nosfuimooss.navegador.MisViajesActivity">
 
+    <!-- Top bar with user profile and navigation icons -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -16,35 +17,43 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- User Profile Section -->
-        <ImageView
-            android:id="@+id/ic_user"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/user_profile_container"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
-            android:contentDescription="Usuario"
-            android:src="@drawable/ic_user"
+            app:cardCornerRadius="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/user_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Foto de perfil"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_user" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/user_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="No Usuario"
+            android:text="Leonor"
             android:textColor="@android:color/black"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/ic_user"
-            app:layout_constraintStart_toEndOf="@+id/ic_user"
-            app:layout_constraintTop_toTopOf="@+id/ic_user" />
+            app:layout_constraintBottom_toBottomOf="@+id/user_profile_container"
+            app:layout_constraintStart_toEndOf="@+id/user_profile_container"
+            app:layout_constraintTop_toTopOf="@+id/user_profile_container" />
 
         <!-- Navigation Icons -->
         <ImageView
             android:id="@+id/ic_search"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="Buscar"
             android:src="@drawable/ic_buscar"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -55,7 +64,7 @@
             android:id="@+id/ic_calendar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="Calendario"
             android:src="@drawable/ic_calendario"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -64,8 +73,8 @@
 
         <ImageView
             android:id="@+id/ic_logo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="Logo"
             android:src="@drawable/logo"
@@ -75,9 +84,31 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Favorites RecyclerView -->
+    <!-- Title Bar -->
+    <TextView
+        android:id="@+id/title_tus_viajes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Tus viajes"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_bar" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#E0E0E0"
+        app:layout_constraintTop_toBottomOf="@+id/title_tus_viajes" />
+
+    <!-- Trips RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_favoritos"
+        android:id="@+id/recycler_mis_viajes"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
@@ -85,14 +116,14 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <!-- Bottom Navigation -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@android:color/white"
+        android:background="#F5F5F5"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
@@ -137,7 +168,7 @@
             android:layout_height="28dp"
             android:layout_margin="10dp"
             android:contentDescription="Favoritos"
-            android:src="@drawable/ic_corazon_completo"
+            android:src="@drawable/ic_megusta"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/nav_profile"
             app:layout_constraintStart_toEndOf="@+id/nav_moon"

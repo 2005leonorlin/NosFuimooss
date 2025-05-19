@@ -20,6 +20,7 @@ import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.VuelosAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.model.Boleto
+import com.example.nosfuimooss.model.PreferenciasUsuario
 import com.example.nosfuimooss.model.Vuelo
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,6 +56,7 @@ class VuelosActivity : AppCompatActivity() {
     private val categorias = listOf("Turista", "Turista Premium", "Business", "Primera Clase")
     private var precioBase = 0.0
     private var precioTotal = 0.0
+
 
     private lateinit var adapter: VuelosAdapter
     private var allBoletos: List<Boleto> = emptyList()
@@ -92,9 +94,33 @@ class VuelosActivity : AppCompatActivity() {
 
         recyclerVuelos.layoutManager = LinearLayoutManager(this)
         adapter = VuelosAdapter(allBoletos, allVuelos) { boleto ->
-            val intent = Intent(this, DetalleBoletosActivity::class.java)
-            intent.putExtra("boleto", boleto)
-            startActivity(intent)
+            // 1) Buscamos el Vuelo que corresponde al destino del boleto
+            val vueloCoincidente = allVuelos
+                .find { it.nombre.equals(boleto.destino, ignoreCase = true) }
+
+            // 2) Sacamos la URL principal (o el primer elemento de imágenes)
+            val imageUrl = vueloCoincidente?.principal
+                ?: vueloCoincidente?.imagenes?.firstOrNull()
+                ?: ""
+
+            // 3) Preferencias de usuario (ya tenías esto)
+            val prefs = PreferenciasUsuario(
+                spinnerOrigen.selectedItem.toString(),
+                spinnerDestino.selectedItem.toString(),
+                fechaInicio?.time ?: 0L,
+                fechaFin?.time ?: 0L,
+                cantidadPersonas,
+                spinnerCategoria.selectedItem.toString()
+            )
+
+            // 4) Montamos el Intent incluyendo imageUrl
+            Intent(this@VuelosActivity, SeleccionarBoletoIdaActivity::class.java).apply {
+                putExtra("boleto", boleto)
+                putExtra("preferencias", prefs)
+                putExtra("precioTotal", precioTotal)
+                putExtra("isRoundTrip", rbIdaVuelta.isChecked)
+                putExtra("imageUrl", imageUrl)        // <-- nuevo extra
+            }.also { startActivity(it) }
         }
         recyclerVuelos.adapter = adapter
     }
@@ -150,7 +176,7 @@ class VuelosActivity : AppCompatActivity() {
         return !origenSeleccionado.isNullOrEmpty() &&
                 !destinoSeleccionado.isNullOrEmpty() &&
                 fechaInicio != null &&
-                fechaFin != null &&
+
                 cantidadPersonas > 0 &&
                 categoriaSeleccionada >= 0 &&
                 tipoVueloSeleccionado
@@ -282,10 +308,7 @@ class VuelosActivity : AppCompatActivity() {
             else -> 0
         }
 
-        // Sumar si es ida y vuelta
-        if (rbIdaVuelta.isChecked) {
-            total += 50
-        }
+
 
         precioTotal = total
         txtPrecioTotal.text = "Precio total:${precioTotal.toInt()} €"
@@ -293,21 +316,13 @@ class VuelosActivity : AppCompatActivity() {
     private fun fetchVuelos() {
         RetrofitClient.vueloApiService.getAllVuelos().enqueue(object : Callback<List<Vuelo>> {
             override fun onResponse(call: Call<List<Vuelo>>, response: Response<List<Vuelo>>) {
-                if (response.isSuccessful) {
-                    allVuelos = response.body() ?: emptyList()
-
-                    // Ya puedes crear el adapter aquí si tienes boletos
-                    adapter = VuelosAdapter(allBoletos, allVuelos) { boleto ->
-                        val intent = Intent(this@VuelosActivity, DetalleBoletosActivity::class.java)
-                        intent.putExtra("boleto", boleto)
-                        startActivity(intent)
-                    }
-                    recyclerVuelos.adapter = adapter
-                }
+                if (!response.isSuccessful) return
+                allVuelos = response.body().orEmpty()
+                // Actualiza vuelos del adaptador
+                adapter.updateVuelos(allVuelos)
             }
-
             override fun onFailure(call: Call<List<Vuelo>>, t: Throwable) {
-                Log.e("VuelosActivity", "Error al cargar vuelos: ${t.message}")
+                Log.e("VuelosActivity", "Error Vuelos: ${t.message}")
             }
         })
     }

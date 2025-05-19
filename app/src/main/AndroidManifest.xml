@@ -19,13 +19,34 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.example.nosfuimooss.boleto.DetalleBoletosActivity"
+            android:name="com.example.nosfuimooss.misvuelos.DetalleReservaActivity"
             android:exported="false" />
         <activity
-            android:name=".ItemVueloDisponibleActivity"
+            android:name="com.example.nosfuimooss.boleto.DatosPasajerosActivity"
             android:exported="false" />
         <activity
-            android:name=".MapaActivity"
+            android:name="com.example.nosfuimooss.boleto.DetalleBoletoActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.misvuelos.DetalleMisVueloActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.boleto.ReservaExitosaActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.boleto.SeleccionarBoletoVueltaActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.boleto.ConfirmacionReservaActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.boleto.TarifaActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.boleto.SeleccionarBoletoIdaActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotel.MapActivity"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.usuariologeado.DetalleVuelos"
@@ -43,7 +64,7 @@
             android:name="com.example.nosfuimooss.meFaltaHacer.ActividadesActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.HotelActivity"
+            android:name="com.example.nosfuimooss.navegador.MisViajesActivity"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.navegador.BuscadorActivity"
