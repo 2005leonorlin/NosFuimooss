@@ -14,7 +14,7 @@ import com.example.nosfuimooss.Adapter.CategoriaAdapter
 import com.example.nosfuimooss.Adapter.DestinoAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.meFaltaHacer.Calendario
-import com.example.nosfuimooss.meFaltaHacer.ElegirVuelo
+import com.example.nosfuimooss.navegador.ElegirVuelo
 import com.example.nosfuimooss.navegador.Favoritos
 import com.example.nosfuimooss.navegador.MisViajesActivity
 import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil

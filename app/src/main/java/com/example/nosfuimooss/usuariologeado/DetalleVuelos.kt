@@ -267,8 +267,10 @@ class DetalleVuelos : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.hotel_button).setOnClickListener {
+
             val intent = Intent(this, ReservarHotel::class.java)
-            intent.putExtra("ID_VUELO", destinationId)
+            val ubicacion = destinationNameText.text.toString().lowercase().capitalize()
+            intent.putExtra("ubicacionDestino", ubicacion)
             startActivity(intent)
         }
 
@@ -290,7 +292,6 @@ class DetalleVuelos : AppCompatActivity() {
 
         findViewById<View>(R.id.flights_button).setOnClickListener {
             val intent = Intent(this, VuelosActivity::class.java)
-            // usa el nombre real del destino, no el ID
             val destinoSeleccionado = destinationNameText.text.toString().lowercase().capitalize()
             intent.putExtra("destino", destinoSeleccionado)
             startActivity(intent)

@@ -20,7 +20,7 @@ import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.VuelosAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.model.Boleto
-import com.example.nosfuimooss.model.PreferenciasUsuario
+import com.example.nosfuimooss.usuario.PreferenciasUsuario
 import com.example.nosfuimooss.model.Vuelo
 import retrofit2.Call
 import retrofit2.Callback

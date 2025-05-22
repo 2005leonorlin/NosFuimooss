@@ -88,7 +88,7 @@
                     android:src="@drawable/ic_buscar"
                     app:tint="#555555" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/etDestino"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -114,7 +114,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 
                 <!-- Check-in Date -->
@@ -170,8 +170,17 @@
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
                 </LinearLayout>
-            </LinearLayout>
 
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tvNoches"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text=""
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:layout_gravity="center_horizontal"/>
             <!-- Guest Selection Row -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -182,7 +191,7 @@
                 <!-- Adults -->
                 <LinearLayout
                     android:id="@+id/layoutAdultos"
-                    android:layout_width="0dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
@@ -210,7 +219,8 @@
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="@string/decrease"
                             android:src="@drawable/fecha_abajo"
-                            app:tint="#555555" />
+                            app:tint="#555555"
+                            tools:ignore="TouchTargetSizeCheck" />
 
                         <TextView
                             android:id="@+id/tvAdultos"
@@ -229,9 +239,11 @@
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="@string/increase"
                             android:src="@drawable/fecha_arriba"
-                            app:tint="#555555" />
+                            app:tint="#555555"
+                            tools:ignore="TouchTargetSizeCheck" />
                     </LinearLayout>
                 </LinearLayout>
+
 
                 <!-- Children -->
                 <LinearLayout
@@ -265,7 +277,8 @@
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:contentDescription="@string/decrease"
                             android:src="@drawable/fecha_abajo"
-                            app:tint="#555555" />
+                            app:tint="#555555"
+                            tools:ignore="TouchTargetSizeCheck" />
 
                         <TextView
                             android:id="@+id/tvNinos"
@@ -288,70 +301,20 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Rooms -->
-                <LinearLayout
-                    android:id="@+id/layoutHabitaciones"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/search_field_background"
-                    android:orientation="vertical"
-                    android:padding="8dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/habitaciones"
-                        android:textSize="12sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:id="@+id/btnDecreaseHabitaciones"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/decrease"
-                            android:src="@drawable/fecha_abajo"
-                            app:tint="#555555" />
-
-                        <TextView
-                            android:id="@+id/tvHabitaciones"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="1"
-                            android:textColor="@android:color/black"
-                            android:textSize="14sp" />
-
-                        <ImageButton
-                            android:id="@+id/btnIncreaseHabitaciones"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/increase"
-                            android:src="@drawable/fecha_arriba"
-                            app:tint="#555555" />
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
 
 
-
             <!-- Search Button -->
+
+
+
             <Button
                 android:id="@+id/btnBuscarHoteles"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/search_button_background"
+                android:backgroundTint="#E91E63"
                 android:padding="12dp"
                 android:text="@string/buscar"
                 android:textColor="@color/white"

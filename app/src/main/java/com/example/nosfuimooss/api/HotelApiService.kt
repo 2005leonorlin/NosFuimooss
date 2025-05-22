@@ -9,6 +9,9 @@ interface HotelApiService {
     @GET("api/hoteles")
     fun getAllHoteles(): Call<List<Hotel>>
 
-    @GET("api/hoteles/destino/{ubicacion}")
-    fun getHotelesPorUbicacion(@Path("ubicacion") ubicacion: String): Call<List<Hotel>>
+    @GET("api/hoteles/{id}")
+    fun getHotelById(@Path("id") id: String): Call<Hotel>
+
+    @GET("api/hoteles/ubicacion/{ubicacion}")
+    fun getHotelesByUbicacion(@Path("ubicacion") ubicacion: String): Call<List<Hotel>>
 }

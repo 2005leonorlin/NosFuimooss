@@ -11,9 +11,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.model.Boleto
-import com.example.nosfuimooss.model.Pasajero
-import com.example.nosfuimooss.model.PreferenciasUsuario
-import com.example.nosfuimooss.model.Reserva
+import com.example.nosfuimooss.usuario.Pasajero
+import com.example.nosfuimooss.usuario.PreferenciasUsuario
+import com.example.nosfuimooss.usuario.Reserva
 import com.example.nosfuimooss.navegador.MisViajesActivity
 import com.example.nosfuimooss.sesion.LoginActivity
 import com.example.nosfuimooss.usuariologeado.DetalleVuelos

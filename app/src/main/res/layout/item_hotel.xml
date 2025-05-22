@@ -92,6 +92,15 @@
                     android:textColor="@android:color/white"
                     android:textSize="12sp" />
             </LinearLayout>
+            <Button
+                android:id="@+id/btnReservar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#E91E63"
+                android:text="Ver hotel"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

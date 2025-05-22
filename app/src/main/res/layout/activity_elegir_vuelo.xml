@@ -5,6 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nosfuimooss.meFaltaHacer.ElegirVuelo">
+    tools:context="com.example.nosfuimooss.navegador.ElegirVuelo">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

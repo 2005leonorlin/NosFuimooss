@@ -3,6 +3,7 @@ package com.example.nosfuimooss.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
@@ -12,72 +13,78 @@ import com.example.NosFuimooss.R
 import com.example.nosfuimooss.model.Hotel
 
 class HotelAdapter(
-    private var hoteles: List<Hotel>
+    private var hoteles: List<Hotel>,
+    private val onClick: (Hotel) -> Unit,
+    private var adultos: Int = 1,
+    private var ninos: Int = 0
 ) : RecyclerView.Adapter<HotelAdapter.HotelViewHolder>() {
 
-    // Listener opcional para click en hotel
-    var onItemClick: ((Hotel) -> Unit)? = null
+    inner class HotelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val ivHotelImage: ImageView = view.findViewById(R.id.ivHotelImage)
+        val tvHotelName: TextView = view.findViewById(R.id.tvHotelName)
+        val tvLocation: TextView = view.findViewById(R.id.tvLocation)
+        val tvPrice: TextView = view.findViewById(R.id.tvPrice)
+        val tvAvailability: TextView = view.findViewById(R.id.tvAvailability)
+        val ratingBar: RatingBar = view.findViewById(R.id.ratingBar)
+        val btnReservar: Button = view.findViewById(R.id.btnReservar)
+    }
 
-    inner class HotelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val ivHotelImage: ImageView = itemView.findViewById(R.id.ivHotelImage)
-        private val tvHotelName: TextView = itemView.findViewById(R.id.tvHotelName)
-        private val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
-        private val tvLocation: TextView = itemView.findViewById(R.id.tvLocation)
-        private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
-        private val tvAvailability: TextView = itemView.findViewById(R.id.tvAvailability)
-
-        fun bind(hotel: Hotel) {
-            // Cargar imagen con Glide
-            Glide.with(itemView.context)
-                .load(hotel.imagen)
-                .centerCrop()
-                .into(ivHotelImage)
-
-            tvHotelName.text = hotel.nombre
-            ratingBar.rating = hotel.estrellas.toFloatOrNull() ?: 0f
-            tvLocation.text = hotel.ubicacion
-            tvPrice.text = "€${hotel.precioNoche}"
-            tvAvailability.text = if (hotel.disponible)
-                itemView.context.getString(R.string.disponible)
-            else
-                itemView.context.getString(R.string.no_disponible)
-
-            itemView.setOnClickListener {
-                onItemClick?.invoke(hotel)
-            }
-        }
+    fun actualizarCantidadPersonas(nuevosAdultos: Int, nuevosNinos: Int) {
+        adultos = nuevosAdultos
+        ninos = nuevosNinos
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_hotel, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel, parent, false)
         return HotelViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: HotelViewHolder, position: Int) {
-        holder.bind(hoteles[position])
+        val hotel = hoteles[position]
+
+        holder.tvHotelName.text = hotel.nombre
+        holder.tvLocation.text = hotel.ubicacion
+
+        val totalPersonas = adultos + ninos
+        val adicionales = (totalPersonas - 2).coerceAtLeast(0)
+        val precioFinal = hotel.precioNoche + (adicionales * 22)
+        holder.tvPrice.text = "Desde ${precioFinal} € / noche"
+
+        // Mostrar disponibilidad
+        holder.tvAvailability.text = if (hotel.disponible) "Disponible" else "No disponible"
+        holder.tvAvailability.setBackgroundResource(
+            if (hotel.disponible) R.drawable.bg_available else R.drawable.bg_unavailable
+        )
+
+        // Estrellas como float
+        holder.ratingBar.rating = hotel.estrellas.toFloat()
+
+        // Cargar imagen
+        Glide.with(holder.itemView.context)
+            .load(hotel.imagenUrl)
+            .placeholder(R.drawable.placeholder_image)
+            .into(holder.ivHotelImage)
+
+        // Evento click para todo el elemento
+        holder.itemView.setOnClickListener { onClick(hotel) }
+
+        // Nuevo: Configurar el evento click específico para el botón "Ver hotel"
+        holder.btnReservar.setOnClickListener {
+            // Simplemente llamamos a la misma función onClick que se usa para todo el elemento
+            // Así aprovechamos el código existente en ReservarHotel.kt que ya tiene la lógica
+            onClick(hotel)
+        }
+    }
+
+    fun getHoteles(): List<Hotel> {
+        return hoteles
     }
 
     override fun getItemCount(): Int = hoteles.size
 
-    /**
-     * Actualiza la lista de hoteles y notifica al adapter.
-     */
-    fun updateList(nuevaLista: List<Hotel>) {
-        hoteles = nuevaLista
-        notifyDataSetChanged()
-    }
-
-    /**
-     * Agrega la funcionalidad para ordenar los hoteles.
-     */
-    fun ordenarPorPrecio() {
-        hoteles = hoteles.sortedBy { it.precioNoche }
-        notifyDataSetChanged()
-    }
-
-    fun ordenarPorEstrellas() {
-        hoteles = hoteles.sortedByDescending { it.estrellas }
+    fun updateData(nuevosHoteles: List<Hotel>) {
+        hoteles = nuevosHoteles
         notifyDataSetChanged()
     }
 }

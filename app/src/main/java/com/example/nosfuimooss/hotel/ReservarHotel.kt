@@ -3,308 +3,505 @@ package com.example.nosfuimooss.hotel
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.os.Build
+import android.widget.Filter
+
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.EditText
+
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.HotelAdapter
 import com.example.nosfuimooss.api.RetrofitClient
-import com.example.nosfuimooss.model.DestinoInfo
+
 import com.example.nosfuimooss.model.Hotel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
+
 class ReservarHotel : AppCompatActivity() {
-    private lateinit var etDestino: EditText
-    private lateinit var tvFechaEntrada: TextView
-    private lateinit var tvFechaSalida: TextView
-    private lateinit var tvAdultos: TextView
-    private lateinit var tvNinos: TextView
-    private lateinit var tvHabitaciones: TextView
-    private lateinit var btnOrdenar: Button
-    private lateinit var btnMapa: Button
+    private lateinit var etDestino: AutoCompleteTextView
+    private lateinit var btnClearDestino: ImageButton
     private lateinit var btnBuscarHoteles: Button
     private lateinit var rvHoteles: RecyclerView
     private lateinit var tvResultsCount: TextView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tvFechaEntrada: TextView
+    private lateinit var tvFechaSalida: TextView
+    private lateinit var tvNoches: TextView
+    private var fechaEntrada: Date? = null
+    private var fechaSalida: Date? = null
+    private var adultos = 1
+    private var ninos = 0
+    private lateinit var adapter: HotelAdapter
+    private var allHoteles: List<Hotel> = emptyList()
+    private var ubicacionesDisponibles: MutableSet<String> = mutableSetOf()
 
-    private var listaHoteles: List<Hotel> = listOf()
-    private var listaHotelesFiltrada: List<Hotel> = listOf()
-    private lateinit var hotelAdapter: HotelAdapter
+    // Variable para controlar el retraso en filtrado
+    private var filterTextChangedJob: kotlinx.coroutines.Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_reservar_hotel)
 
-        // Referencias
         etDestino = findViewById(R.id.etDestino)
-        tvFechaEntrada = findViewById(R.id.tvFechaEntrada)
-        tvFechaSalida = findViewById(R.id.tvFechaSalida)
-        tvAdultos = findViewById(R.id.tvAdultos)
-        tvNinos = findViewById(R.id.tvNinos)
-        tvHabitaciones = findViewById(R.id.tvHabitaciones)
-        btnOrdenar = findViewById(R.id.btnOrdenar)
-
+        btnClearDestino = findViewById(R.id.btnClearDestino)
         btnBuscarHoteles = findViewById(R.id.btnBuscarHoteles)
         rvHoteles = findViewById(R.id.rvHoteles)
         tvResultsCount = findViewById(R.id.tvResultsCount)
+        progressBar = findViewById(R.id.progressBar)
+        tvNoches = findViewById(R.id.tvNoches)
+        tvFechaEntrada = findViewById(R.id.tvFechaEntrada)
+        tvFechaSalida = findViewById(R.id.tvFechaSalida)
 
-        // Configurar RecyclerView
+        tvFechaEntrada.setOnClickListener {
+            mostrarDatePicker(true)
+        }
+
+        tvFechaSalida.setOnClickListener {
+            mostrarDatePicker(false)
+        }
+
+        etDestino.threshold = 1
         rvHoteles.layoutManager = LinearLayoutManager(this)
-        hotelAdapter = HotelAdapter(listOf())
-        rvHoteles.adapter = hotelAdapter
 
-        // Configurar button clear para el destino
-        findViewById<ImageButton>(R.id.btnClearDestino).setOnClickListener {
-            etDestino.setText("")
+        // Aquí cambiamos el lambda para abrir la actividad de detalle en lugar de mostrar un Toast
+        adapter = HotelAdapter(emptyList(), { hotel ->
+            // Calculamos el precio final con el número actual de personas
+            val totalPersonas = adultos + ninos
+            val adicionales = (totalPersonas - 2).coerceAtLeast(0)
+            val precioFinal = hotel.precioNoche + (adicionales * 22)
+
+            // Creamos un intent para ir a DetalleHotelActivity
+            val intent = Intent(this, DetalleHotelActivity::class.java).apply {
+                putExtra("hotel", hotel)
+                putExtra("adultos", adultos)
+                putExtra("ninos", ninos)
+                putExtra("destino", etDestino.text.toString())
+                putExtra("fechaEntrada", tvFechaEntrada.text.toString())
+                putExtra("fechaSalida", tvFechaSalida.text.toString())
+                putExtra("precioFinal", precioFinal)
+            }
+
+            // Iniciamos la actividad
+            startActivity(intent)
+        }, adultos, ninos)
+
+        rvHoteles.adapter = adapter
+        findViewById<ImageButton>(R.id.btnIncreaseAdultos).setOnClickListener {
+            adultos++
+            findViewById<TextView>(R.id.tvAdultos).text = adultos.toString()
+            adapter.actualizarCantidadPersonas(adultos, ninos)
         }
 
-        // Setear fecha
-        tvFechaEntrada.setOnClickListener { mostrarSelectorFecha(tvFechaEntrada) }
-        tvFechaSalida.setOnClickListener { mostrarSelectorFecha(tvFechaSalida) }
-
-        // Contadores
-        setUpContador(R.id.btnIncreaseAdultos, R.id.btnDecreaseAdultos, tvAdultos, min = 1)
-        setUpContador(R.id.btnIncreaseNinos, R.id.btnDecreaseNinos, tvNinos, min = 0)
-        setUpContador(R.id.btnIncreaseHabitaciones, R.id.btnDecreaseHabitaciones, tvHabitaciones, min = 1)
-
-        // Recibir ID del vuelo
-        val idVuelo = intent.getStringExtra("ID_VUELO")
-        if (idVuelo != null) {
-            cargarDatosDelDestino(idVuelo)
+        findViewById<ImageButton>(R.id.btnDecreaseAdultos).setOnClickListener {
+            if (adultos > 1) {
+                adultos--
+                findViewById<TextView>(R.id.tvAdultos).text = adultos.toString()
+                adapter.actualizarCantidadPersonas(adultos, ninos)
+            }
         }
 
-        // Botón para ordenar hoteles
+        // Botones para niños
+        findViewById<ImageButton>(R.id.btnIncreaseNinos).setOnClickListener {
+            ninos++
+            findViewById<TextView>(R.id.tvNinos).text = ninos.toString()
+            adapter.actualizarCantidadPersonas(adultos, ninos)
+        }
+
+        findViewById<ImageButton>(R.id.btnDecreaseNinos).setOnClickListener {
+            if (ninos > 0) {
+                ninos--
+                findViewById<TextView>(R.id.tvNinos).text = ninos.toString()
+                adapter.actualizarCantidadPersonas(adultos, ninos)
+            }
+        }
+        findViewById<Button>(R.id.btnMapa).setOnClickListener {
+            // Mostrar indicador de carga
+            progressBar.visibility = View.VISIBLE
+
+            // Usar lifecycleScope para preparar datos en segundo plano
+            lifecycleScope.launch {
+                val hotelesFiltrados = withContext(Dispatchers.Default) {
+                    adapter.getHoteles()
+                }
+
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.GONE
+
+                    // Comprobar si tenemos hoteles con coordenadas
+                    val hotelesConCoordenadas = hotelesFiltrados.filter {
+                        it.latitud != null && it.longitud != null
+                    }
+
+                    if (hotelesConCoordenadas.isEmpty()) {
+                        Toast.makeText(
+                            this@ReservarHotel,
+                            "No hay hoteles con coordenadas para mostrar en el mapa",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@withContext
+                    }
+
+                    // Iniciar la actividad del mapa con los datos filtrados
+                    val intent = Intent(this@ReservarHotel, MapaActivity::class.java)
+                    intent.putExtra("hoteles", ArrayList(hotelesFiltrados))
+
+                    // Pasar datos adicionales del usuario
+                    intent.putExtra("adultos", adultos)
+                    intent.putExtra("ninos", ninos)
+                    intent.putExtra("destino", etDestino.text.toString())
+                    intent.putExtra("fechaEntrada", tvFechaEntrada.text.toString())
+                    intent.putExtra("fechaSalida", tvFechaSalida.text.toString())
+
+                    startActivity(intent)
+                }
+            }
+        }
+
+        // Capitalizar automáticamente cada palabra al escribir con manejo de corrutinas
+        etDestino.addTextChangedListener(object : TextWatcher {
+            private var isEditing = false
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isEditing || s == null) return
+
+                val capitalized = s.toString()
+                    .lowercase()
+                    .split(" ")
+                    .joinToString(" ") { it.replaceFirstChar { c -> c.uppercaseChar() } }
+
+                if (s.toString() != capitalized) {
+                    isEditing = true
+                    etDestino.setText(capitalized)
+                    etDestino.setSelection(capitalized.length)
+                    isEditing = false
+                }
+
+                if (capitalized.isNotEmpty()) {
+                    btnClearDestino.visibility = View.VISIBLE
+
+                    // Cancelar el trabajo anterior si existe
+                    filterTextChangedJob?.cancel()
+
+                    // Iniciar un nuevo trabajo con retraso para evitar filtrados excesivos
+                    filterTextChangedJob = lifecycleScope.launch {
+                        kotlinx.coroutines.delay(300) // Pequeño retraso para evitar filtrar en cada pulsación
+                        filtrarYMostrarHoteles(capitalized)
+                    }
+                } else {
+                    btnClearDestino.visibility = View.GONE
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        adapter.updateData(allHoteles)
+                        tvResultsCount.text = "Se encontraron ${allHoteles.size} hoteles"
+                    }
+                }
+            }
+        })
+
+        btnBuscarHoteles.setOnClickListener {
+            val destino = etDestino.text.toString().trim()
+            if (destino.isEmpty()) {
+                Toast.makeText(this, "Por favor, introduce un destino", Toast.LENGTH_SHORT).show()
+            } else {
+                buscarHotelesPorDestino(destino)
+            }
+        }
+
+        btnClearDestino.setOnClickListener {
+            etDestino.text.clear()
+            lifecycleScope.launch(Dispatchers.Main) {
+                adapter.updateData(allHoteles)
+                tvResultsCount.text = "Se encontraron ${allHoteles.size} hoteles"
+            }
+        }
+        val btnOrdenar: Button = findViewById(R.id.btnOrdenar)
         btnOrdenar.setOnClickListener {
             mostrarOpcionesOrden()
         }
 
-        // Botón para búsqueda de hoteles
-        btnBuscarHoteles.setOnClickListener {
-            buscarHoteles()
-        }
+        cargarTodosLosHoteles()
 
-        // Botón para abrir el mapa
-        btnMapa.setOnClickListener {
-            mostrarMapa()
-        }
-    }
-
-    private fun mostrarSelectorFecha(targetView: TextView) {
-        val calendar = Calendar.getInstance()
-
-        // Si ya hay una fecha, la usamos como fecha inicial
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val textoFecha = targetView.text.toString()
-
-        if (textoFecha != getString(R.string.fecha_por_defecto)) {
-            try {
-                val date = dateFormat.parse(textoFecha)
-                if (date != null) {
-                    calendar.time = date
-                }
-            } catch (e: Exception) {
-                // Si hay error al parsear, usamos la fecha actual
-            }
-        }
-
-        val dialog = DatePickerDialog(this,
-            { _, year, month, day ->
-                val fecha = "%02d/%02d/%04d".format(day, month + 1, year)
-                targetView.text = fecha
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-
-        // Configurar fecha mínima (hoy)
-        dialog.datePicker.minDate = Calendar.getInstance().timeInMillis
-
-        dialog.show()
-    }
-
-    private fun setUpContador(btnUpId: Int, btnDownId: Int, textView: TextView, min: Int) {
-        findViewById<ImageButton>(btnUpId).setOnClickListener {
-            val actual = textView.text.toString().toInt()
-            textView.text = (actual + 1).toString()
-        }
-        findViewById<ImageButton>(btnDownId).setOnClickListener {
-            val actual = textView.text.toString().toInt()
-            if (actual > min) textView.text = (actual - 1).toString()
-        }
-    }
-
-    private fun cargarDatosDelDestino(idVuelo: String) {
-        RetrofitClient.destinoApiService.getInfoPorIdVuelo(idVuelo)
-            .enqueue(object : Callback<DestinoInfo> {
-                override fun onResponse(call: Call<DestinoInfo>, response: Response<DestinoInfo>) {
-                    if (response.isSuccessful) {
-                        val destinoInfo = response.body()
-                        val destino = destinoInfo?.vuelo?.nombre ?: ""
-
-                        etDestino.setText(destino)
-                        // No deshabilitamos el campo para permitir edición
-                        // etDestino.isEnabled = false
-
-                        listaHoteles = destinoInfo?.hoteles ?: listOf()
-                        listaHotelesFiltrada = listaHoteles
-                        actualizarResultados()
-                    }
-                }
-
-                override fun onFailure(call: Call<DestinoInfo>, t: Throwable) {
-                    Toast.makeText(this@ReservarHotel, "Error al conectar: ${t.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    private fun buscarHoteles() {
-        val destino = etDestino.text.toString().trim()
-
-        if (destino.isEmpty()) {
-            Toast.makeText(this, "Por favor, ingrese un destino", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val fechaEntrada = tvFechaEntrada.text.toString()
-        val fechaSalida = tvFechaSalida.text.toString()
-
-        if (fechaEntrada == getString(R.string.fecha_por_defecto) ||
-            fechaSalida == getString(R.string.fecha_por_defecto)) {
-            Toast.makeText(this, "Por favor, seleccione fechas de entrada y salida", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Consultar hoteles en la ubicación
-        RetrofitClient.hotelApiService.getHotelesPorUbicacion(destino)
-            .enqueue(object : Callback<List<Hotel>> {
-                @RequiresApi(Build.VERSION_CODES.O)
-                override fun onResponse(call: Call<List<Hotel>>, response: Response<List<Hotel>>) {
-                    if (response.isSuccessful) {
-                        listaHoteles = response.body() ?: listOf()
-                        filtrarHotelesPorFecha(fechaEntrada, fechaSalida)
-                    } else {
-                        Toast.makeText(this@ReservarHotel, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<List<Hotel>>, t: Throwable) {
-                    Toast.makeText(this@ReservarHotel, "Error al conectar: ${t.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun filtrarHotelesPorFecha(fechaEntrada: String, fechaSalida: String) {
-        val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val fechaEntradaDate = try {
-            LocalDate.parse(fechaEntrada, dateFormat)
-        } catch (e: Exception) {
-            null
-        }
-
-        val fechaSalidaDate = try {
-            LocalDate.parse(fechaSalida, dateFormat)
-        } catch (e: Exception) {
-            null
-        }
-
-        // Filtrar por fechas disponibles
-        listaHotelesFiltrada = if (fechaEntradaDate != null && fechaSalidaDate != null) {
-            listaHoteles.filter { hotel ->
-                val fechaInicioHotel = hotel.fechaDisponible?.inicio
-                val fechaFinHotel = hotel.fechaDisponible?.fin
-
-                // Si el hotel tiene fecha disponible, verificamos que esté en el rango
-                if (fechaInicioHotel != null && fechaFinHotel != null) {
-                    fechaEntradaDate >= fechaInicioHotel && fechaSalidaDate <= fechaFinHotel
-                } else {
-                    // Si no tiene fecha especificada, lo incluimos
-                    true
-                }
-            }
-        } else {
-            listaHoteles
-        }
-
-        // Aplicar ajustes de precio según adultos, niños y habitaciones
-        ajustarPrecios()
-
-        // Actualizar la UI
-        actualizarResultados()
-    }
-
-    private fun ajustarPrecios() {
-        val adultos = tvAdultos.text.toString().toInt()
-        val ninos = tvNinos.text.toString().toInt()
-        val habitaciones = tvHabitaciones.text.toString().toInt()
-
-        // Crear una lista de hoteles con precios ajustados
-        listaHotelesFiltrada = listaHotelesFiltrada.map { hotel ->
-            val precioBase = hotel.precioNoche
-            val precioAjustado = precioBase +
-                    (adultos - 1) * 20.0 +  // El primer adulto ya está incluido
-                    ninos * 10.0 +
-                    (habitaciones - 1) * 50.0  // La primera habitación ya está incluida
-
-            // Crear una copia del hotel con el precio ajustado
-            Hotel(
-                id = hotel.id,
-                nombre = hotel.nombre,
-                ubicacion = hotel.ubicacion,
-                precioNoche = precioAjustado,
-                disponible = hotel.disponible,
-                imagen = hotel.imagen,
-                estrellas = hotel.estrellas,
-                fechaDisponible = hotel.fechaDisponible
-            )
-        }
-    }
-
-    private fun actualizarResultados() {
-        // Actualizar contador de resultados
-        tvResultsCount.text = "${listaHotelesFiltrada.size} hoteles encontrados"
-
-        // Actualizar RecyclerView
-        hotelAdapter.updateList(listaHotelesFiltrada)
     }
 
     private fun mostrarOpcionesOrden() {
-        val opciones = arrayOf("Precio (menor a mayor)", "Precio (mayor a menor)", "Estrellas (mayor a menor)", "Estrellas (menor a mayor)")
+        val opciones = arrayOf("Precio", "Estrellas")
+        AlertDialog.Builder(this)
+            .setTitle("Ordenar hoteles por")
+            .setItems(opciones) { _, which ->
+                lifecycleScope.launch {
+                    val hotelesOrdenados = withContext(Dispatchers.Default) {
+                        when (which) {
+                            0 -> { // Precio ascendente
+                                allHoteles.sortedBy { it.precioNoche }
+                            }
+                            1 -> { // Estrellas descendente
+                                allHoteles.sortedByDescending { it.estrellas }
+                            }
+                            else -> allHoteles
+                        }
+                    }
 
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Ordenar por:")
-        builder.setItems(opciones) { _, which ->
-            listaHotelesFiltrada = when (which) {
-                0 -> listaHotelesFiltrada.sortedBy { it.precioNoche }
-                1 -> listaHotelesFiltrada.sortedByDescending { it.precioNoche }
-                2 -> listaHotelesFiltrada.sortedByDescending { it.estrellas }
-                3 -> listaHotelesFiltrada.sortedBy { it.estrellas }
-                else -> listaHotelesFiltrada
+                    withContext(Dispatchers.Main) {
+                        allHoteles = hotelesOrdenados
+                        adapter.updateData(allHoteles)
+                        tvResultsCount.text = "Se encontraron ${allHoteles.size} hoteles"
+                    }
+                }
             }
-            actualizarResultados()
-        }
-        builder.show()
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
-    private fun mostrarMapa() {
-        val intent = Intent(this, MapActivity::class.java)
+    private fun mostrarDatePicker(esEntrada: Boolean) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
+        val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+            calendar.set(selectedYear, selectedMonth, selectedDay)
+            val selectedDate = calendar.time
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val formattedDate = dateFormat.format(selectedDate)
 
-        startActivity(intent)
+            if (esEntrada) {
+                fechaEntrada = selectedDate
+                tvFechaEntrada.text = formattedDate
+
+                // Si la salida es anterior, igualar fechas
+                if (fechaSalida != null && fechaSalida!! < fechaEntrada!!) {
+                    fechaSalida = selectedDate
+                    tvFechaSalida.text = formattedDate
+                }
+            } else {
+                if (fechaEntrada != null && selectedDate < fechaEntrada!!) {
+                    Toast.makeText(this, "La fecha de salida debe ser posterior a la de entrada", Toast.LENGTH_SHORT).show()
+                    return@DatePickerDialog
+                }
+                fechaSalida = selectedDate
+                tvFechaSalida.text = formattedDate
+            }
+            actualizarNumeroDeNoches()
+
+        }, year, month, day)
+
+        // No permitir seleccionar fechas pasadas
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+
+        datePickerDialog.show()
+
+    }
+
+    private fun actualizarNumeroDeNoches() {
+        if (fechaEntrada != null && fechaSalida != null) {
+            val diferenciaMillis = fechaSalida!!.time - fechaEntrada!!.time
+            val noches = (diferenciaMillis / (1000 * 60 * 60 * 24)).toInt()
+
+            if (noches >= 1) {
+                tvNoches.text = "Estancia de $noches noche${if (noches > 1) "s" else ""}"
+            } else {
+                tvNoches.text = ""
+            }
+        } else {
+            tvNoches.text = ""
+        }
+    }
+
+    private fun cargarTodosLosHoteles() {
+        progressBar.visibility = View.VISIBLE
+        tvResultsCount.text = "Cargando hoteles..."
+
+        RetrofitClient.hotelApiService.getAllHoteles().enqueue(object : Callback<List<Hotel>> {
+            override fun onResponse(call: Call<List<Hotel>>, response: Response<List<Hotel>>) {
+                progressBar.visibility = View.GONE
+
+                if (response.isSuccessful) {
+                    lifecycleScope.launch {
+                        val hoteles = response.body().orEmpty()
+
+                        // Procesar datos en segundo plano
+                        withContext(Dispatchers.Default) {
+                            allHoteles = hoteles
+                            ubicacionesDisponibles = allHoteles.map { it.ubicacion }.toMutableSet()
+                        }
+
+                        // Actualizar UI en hilo principal
+                        withContext(Dispatchers.Main) {
+                            adapter.updateData(allHoteles)
+                            tvResultsCount.text = "Se encontraron ${allHoteles.size} hoteles"
+                            configureAutoComplete()
+
+                            val ubicacionPreseleccionada = intent.getStringExtra("ubicacionDestino")
+                            if (!ubicacionPreseleccionada.isNullOrEmpty()) {
+                                etDestino.setText(ubicacionPreseleccionada)
+                                buscarHotelesPorDestino(ubicacionPreseleccionada)
+                            }
+                        }
+                    }
+                } else {
+                    Log.e("ReservarHotel", "Error: ${response.code()} - ${response.message()}")
+                    Toast.makeText(
+                        this@ReservarHotel,
+                        "Error al cargar hoteles: ${response.message()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    tvResultsCount.text = "Error al cargar hoteles"
+                }
+            }
+
+            override fun onFailure(call: Call<List<Hotel>>, t: Throwable) {
+                progressBar.visibility = View.GONE
+                Log.e("ReservarHotel", "Error de red: ${t.message}", t)
+                Toast.makeText(
+                    this@ReservarHotel,
+                    "Error de red: ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                tvResultsCount.text = "Error de conexión"
+            }
+        })
+    }
+
+    private fun configureAutoComplete() {
+        class CaseInsensitiveString(val original: String) {
+            override fun toString(): String = original
+            override fun equals(other: Any?): Boolean {
+                return (other as? CaseInsensitiveString)?.original.equals(original, ignoreCase = true)
+            }
+            override fun hashCode(): Int = original.lowercase().hashCode()
+        }
+
+        lifecycleScope.launch {
+            val ubicacionesList = withContext(Dispatchers.Default) {
+                ubicacionesDisponibles.map { CaseInsensitiveString(it) }
+                    .sortedBy { it.original }
+                    .toMutableList()
+            }
+
+            withContext(Dispatchers.Main) {
+                val autoCompleteAdapter = object : ArrayAdapter<CaseInsensitiveString>(
+                    this@ReservarHotel,
+                    android.R.layout.simple_dropdown_item_1line,
+                    ubicacionesList
+                ) {
+                    override fun getFilter(): Filter {
+                        return object : Filter() {
+                            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                                val results = FilterResults()
+                                if (constraint.isNullOrEmpty()) {
+                                    results.values = ubicacionesList
+                                    results.count = ubicacionesList.size
+                                } else {
+                                    val filterPattern = constraint.toString().lowercase().trim()
+                                    val filtered = ubicacionesList.filter {
+                                        it.original.lowercase().contains(filterPattern)
+                                    }
+                                    results.values = filtered
+                                    results.count = filtered.size
+                                }
+                                return results
+                            }
+
+                            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                                if (results != null && results.count > 0) {
+                                    clear()
+                                    addAll(results.values as List<CaseInsensitiveString>)
+                                    notifyDataSetChanged()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                etDestino.setAdapter(autoCompleteAdapter)
+                etDestino.threshold = 1
+                etDestino.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+                    val ubicacionSeleccionada = autoCompleteAdapter.getItem(position)?.original ?: ""
+                    buscarHotelesPorDestino(ubicacionSeleccionada)
+                }
+            }
+        }
+    }
+
+    private fun filtrarYMostrarHoteles(texto: String) {
+        if (texto.isNotEmpty()) {
+            etDestino.showDropDown()
+        }
+
+        // Usar corrutinas para el filtrado pesado
+        lifecycleScope.launch {
+            val hotelesFiltrados = withContext(Dispatchers.Default) {
+                val textoLowerCase = texto.lowercase()
+                allHoteles.filter {
+                    it.ubicacion.lowercase().contains(textoLowerCase) ||
+                            it.nombre.lowercase().contains(textoLowerCase)
+                }
+            }
+
+            // Actualizar UI en el hilo principal
+            withContext(Dispatchers.Main) {
+                adapter.updateData(hotelesFiltrados)
+                tvResultsCount.text = "Se encontraron ${hotelesFiltrados.size} hoteles"
+            }
+        }
+    }
+
+    private fun buscarHotelesPorDestino(destino: String) {
+        if (allHoteles.isEmpty()) {
+            Toast.makeText(this, "Esperando a que se carguen los hoteles...", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        progressBar.visibility = View.VISIBLE
+
+        // Usar corrutinas para la búsqueda
+        lifecycleScope.launch {
+            val resultados = withContext(Dispatchers.Default) {
+                val destinoLowerCase = destino.lowercase()
+                allHoteles.filter {
+                    it.ubicacion.lowercase().contains(destinoLowerCase) ||
+                            it.nombre.lowercase().contains(destinoLowerCase)
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                progressBar.visibility = View.GONE
+                adapter.updateData(resultados)
+                tvResultsCount.text = "Se encontraron ${resultados.size} hoteles para \"$destino\""
+
+                if (resultados.isEmpty()) {
+                    Toast.makeText(this@ReservarHotel, "No hay hoteles disponibles para \"$destino\"", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.model.Boleto
-import com.example.nosfuimooss.model.PreferenciasUsuario
+import com.example.nosfuimooss.usuario.PreferenciasUsuario
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

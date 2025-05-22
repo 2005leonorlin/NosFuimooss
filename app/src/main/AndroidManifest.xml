@@ -19,6 +19,24 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name="com.example.nosfuimooss.misvuelos.DetalleReservaHotelActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotel.ConfirmacionHotelesActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotel.DatosPersonasActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotel.InfoHotelActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotel.ElijeTuEstanciaActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotel.DetalleHotelActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.nosfuimooss.misvuelos.DetalleReservaActivity"
             android:exported="false" />
         <activity
@@ -26,12 +44,6 @@
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.boleto.DetalleBoletoActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.example.nosfuimooss.misvuelos.DetalleMisVueloActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.example.nosfuimooss.boleto.ReservaExitosaActivity"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.boleto.SeleccionarBoletoVueltaActivity"
@@ -46,7 +58,7 @@
             android:name="com.example.nosfuimooss.boleto.SeleccionarBoletoIdaActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.hotel.MapActivity"
+            android:name="com.example.nosfuimooss.hotel.MapaActivity"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.usuariologeado.DetalleVuelos"
@@ -82,7 +94,7 @@
             android:name="com.example.nosfuimooss.hotel.ReservarHotel"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.ElegirVuelo"
+            android:name="com.example.nosfuimooss.navegador.ElegirVuelo"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial"

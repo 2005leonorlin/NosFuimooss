@@ -1,4 +1,4 @@
-package com.example.nosfuimooss.meFaltaHacer
+package com.example.nosfuimooss.navegador
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

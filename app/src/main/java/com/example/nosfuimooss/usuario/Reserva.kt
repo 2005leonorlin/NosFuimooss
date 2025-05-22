@@ -1,5 +1,6 @@
-package com.example.nosfuimooss.model
+package com.example.nosfuimooss.usuario
 
+import com.example.nosfuimooss.model.Boleto
 import java.io.Serializable
 
 data class Reserva(

@@ -1,4 +1,4 @@
-package com.example.nosfuimooss.model
+package com.example.nosfuimooss.usuario
 
 import java.io.Serializable
 

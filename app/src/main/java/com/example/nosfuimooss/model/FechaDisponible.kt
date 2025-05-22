@@ -1,8 +1,9 @@
 package com.example.nosfuimooss.model
 
-import java.time.LocalDate
+import java.io.Serializable
+
 
 data class FechaDisponible(
-    val inicio: LocalDate? = null,
-    val fin: LocalDate? = null
-)
+    val inicio:  String?= null,
+    val fin: String? = null
+): Serializable
