@@ -1,6 +1,7 @@
 package com.example.nosfuimooss.navegador
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -12,8 +13,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.NosFuimooss.R
+import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.misvuelos.BoletosFragment
 import com.example.nosfuimooss.misvuelos.HotelesFragment
+import com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
@@ -33,7 +36,7 @@ class MisViajesActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(R.layout.activity_mis_viajes)
 
-        // Inicializar Firebase
+
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
 
@@ -44,12 +47,11 @@ class MisViajesActivity : AppCompatActivity() {
             return
         }
 
-        // Inicializar vistas
+
         initViews()
         setupViewPager()
         setupBottomNavigation()
         loadUserInfo()
-
         // Manejar la selección de tab si viene desde confirmación
         handleTabSelection()
     }
@@ -87,14 +89,14 @@ class MisViajesActivity : AppCompatActivity() {
     }
 
     private fun handleTabSelection() {
-        // Verificar si se debe seleccionar una pestaña específica
+
         val tabPosition = intent.getIntExtra("tab_position", -1)
         if (tabPosition != -1) {
             viewPager.currentItem = tabPosition
             Log.d("MisViajesActivity", "Seleccionando tab: $tabPosition")
         }
 
-        // Verificar si hay IDs de nuevas reservas para mostrar
+        // Verificar si hay una nueva reserva de vuelo o hotel
         val nuevaReservaId = intent.getStringExtra("nuevaReservaId")
         val nuevaReservaHotelId = intent.getStringExtra("nuevaReservaHotelId")
 
@@ -133,33 +135,33 @@ class MisViajesActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigation() {
-        // Home
-        findViewById<android.widget.ImageView>(R.id.nav_home).setOnClickListener {
-            finish()
-        }
 
-        // Vuelos
-        findViewById<android.widget.ImageView>(R.id.nav_flight).setOnClickListener {
+        findViewById<ImageView>(R.id.nav_home).setOnClickListener {
+            Toast.makeText(this, "Destinos", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, UsuarioLogeadoInicial::class.java))
+        }
+        findViewById<ImageView>(R.id.nav_flight).setOnClickListener {
             Toast.makeText(this, "Búsqueda de vuelos", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ElegirVuelo::class.java))
         }
-
-        // Maleta (Mis viajes) - Ya estamos aquí
-        findViewById<android.widget.ImageView>(R.id.nav_moon).setOnClickListener {
-            // Estamos en esta pantalla, no hacemos nada
+        //  Ya estamos aquí
+        findViewById<ImageView>(R.id.nav_moon).setOnClickListener {
+            Toast.makeText(this, "Mis Viajes", Toast.LENGTH_SHORT).show()
         }
-
-        // Favoritos
-        findViewById<android.widget.ImageView>(R.id.nav_heart).setOnClickListener {
-            Toast.makeText(this, "Favoritos no implementado", Toast.LENGTH_SHORT).show()
+        findViewById<ImageView>(R.id.nav_heart).setOnClickListener {
+            Toast.makeText(this, "Favoritos", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Favoritos::class.java))
         }
-
-        // Perfil
-        findViewById<android.widget.ImageView>(R.id.nav_profile).setOnClickListener {
-            Toast.makeText(this, "Perfil no implementado", Toast.LENGTH_SHORT).show()
+        findViewById<ImageView>(R.id.nav_profile).setOnClickListener {
+            Toast.makeText(this, "Perfil", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, UsuarioPerfil::class.java))
+        }
+        findViewById<ImageView>(R.id.ic_calendar).setOnClickListener {
+            startActivity(Intent(this, Calendario::class.java))
         }
     }
 
-    // Adapter para ViewPager2
+
     private class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
         override fun getItemCount(): Int = 2
 

@@ -1,6 +1,7 @@
 package com.example.nosfuimooss.misvuelos
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,11 +11,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.NosFuimooss.R
+import com.example.nosfuimooss.Adapter.MonumentosGuardadosAdapter
+import com.example.nosfuimooss.model.Monumento
 import com.example.nosfuimooss.usuario.ReservaHotel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -22,7 +30,6 @@ import java.util.Locale
 class DetalleReservaHotelActivity : AppCompatActivity() {
     private lateinit var reservaHotel: ReservaHotel
 
-    // Vistas
     private lateinit var imgHotel: ImageView
     private lateinit var tvNombreHotel: TextView
     private lateinit var tvUbicacionHotel: TextView
@@ -40,9 +47,17 @@ class DetalleReservaHotelActivity : AppCompatActivity() {
     private lateinit var btnCancelarReserva: Button
     private lateinit var btnVolver: Button
 
+    // Nuevas vistas para monumentos
+    private lateinit var recyclerMonumentos: RecyclerView
+    private lateinit var tvNoMonumentos: TextView
+    private lateinit var monumentosAdapter: MonumentosGuardadosAdapter
+
     // Firebase
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+
+    // Lista de monumentos guardados
+    private val monumentosGuardados: MutableList<Monumento> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +76,12 @@ class DetalleReservaHotelActivity : AppCompatActivity() {
 
         // Configurar datos
         setupData()
+
+        // Configurar RecyclerView de monumentos
+        setupMonumentosRecyclerView()
+
+        // Cargar monumentos guardados
+        loadMonumentosGuardados()
 
         // Configurar listeners
         setupListeners()
@@ -83,6 +104,10 @@ class DetalleReservaHotelActivity : AppCompatActivity() {
         tvFechaReserva = findViewById(R.id.tv_fecha_reserva)
         btnCancelarReserva = findViewById(R.id.btn_cancelar_reserva)
         btnVolver = findViewById(R.id.btn_volver)
+
+        // Nuevas vistas para monumentos
+        recyclerMonumentos = findViewById(R.id.recycler_monumentos)
+        tvNoMonumentos = findViewById(R.id.tv_no_monumentos)
     }
 
     private fun setupData() {
@@ -138,6 +163,171 @@ class DetalleReservaHotelActivity : AppCompatActivity() {
         } else {
             imgHotel.setImageResource(R.drawable.imagen_1)
         }
+    }
+
+    private fun setupMonumentosRecyclerView() {
+        monumentosAdapter = MonumentosGuardadosAdapter(monumentosGuardados) { monumento ->
+            // Aquí puedes agregar la funcionalidad para ver detalles del monumento
+            // o eliminarlo de la lista si lo deseas
+            mostrarDetalleMonumento(monumento)
+        }
+
+        recyclerMonumentos.apply {
+            layoutManager = LinearLayoutManager(this@DetalleReservaHotelActivity)
+            adapter = monumentosAdapter
+        }
+    }
+
+    private fun loadMonumentosGuardados() {
+        val userId = auth.currentUser?.uid ?: return
+
+        println("=== CARGANDO MONUMENTOS GUARDADOS ===")
+        println("Usuario ID: $userId")
+        println("Reserva ID: ${reservaHotel.id}")
+
+        database.reference
+            .child("reservasHoteles")
+            .child(userId)
+            .child(reservaHotel.id)
+            .child("monumentosGuardados")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    println("Snapshot existe: ${snapshot.exists()}")
+                    println("Número de monumentos: ${snapshot.childrenCount}")
+
+                    monumentosGuardados.clear()
+
+                    if (snapshot.exists()) {
+                        for (monumentoSnapshot in snapshot.children) {
+                            try {
+                                val monumento = monumentoSnapshot.getValue(Monumento::class.java)
+                                monumento?.let {
+                                    monumentosGuardados.add(it)
+                                    println("Monumento cargado: ${it.nombre}")
+                                }
+                            } catch (e: Exception) {
+                                println("Error al cargar monumento: ${e.message}")
+                            }
+                        }
+                    }
+
+                    updateMonumentosUI()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    println("Error al cargar monumentos: ${error.message}")
+                    Toast.makeText(
+                        this@DetalleReservaHotelActivity,
+                        "Error al cargar monumentos guardados",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
+
+    private fun updateMonumentosUI() {
+        if (monumentosGuardados.isEmpty()) {
+            recyclerMonumentos.visibility = View.GONE
+            tvNoMonumentos.visibility = View.VISIBLE
+            tvNoMonumentos.text = "No tienes monumentos guardados para esta reserva.\n\nPuedes guardar monumentos desde la sección de explorar lugares."
+        } else {
+            recyclerMonumentos.visibility = View.VISIBLE
+            tvNoMonumentos.visibility = View.GONE
+            monumentosAdapter.notifyDataSetChanged()
+        }
+
+        println("UI actualizada - Monumentos: ${monumentosGuardados.size}")
+    }
+
+    private fun mostrarDetalleMonumento(monumento: Monumento) {
+        AlertDialog.Builder(this)
+            .setTitle(monumento.nombre)
+            .setMessage("${monumento.ubicacion}\n\n¿Qué deseas hacer con este monumento?")
+            .setPositiveButton("Ver detalles") { _, _ ->
+                // Aquí podrías navegar a una actividad de detalle del monumento
+                Toast.makeText(this, "Función de detalles próximamente", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Eliminar") { _, _ ->
+                confirmarEliminarMonumento(monumento)
+            }
+            .setNeutralButton("Cerrar", null)
+            .show()
+    }
+
+    private fun confirmarEliminarMonumento(monumento: Monumento) {
+        AlertDialog.Builder(this)
+            .setTitle("¿Eliminar monumento?")
+            .setMessage("¿Estás seguro de que deseas eliminar '${monumento.nombre}' de esta reserva?")
+            .setPositiveButton("Eliminar") { _, _ ->
+                eliminarMonumento(monumento)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun eliminarMonumento(monumento: Monumento) {
+        val userId = auth.currentUser?.uid ?: return
+
+        // Mostrar diálogo de progreso
+        val loadingDialog = AlertDialog.Builder(this)
+            .setView(R.layout.dialog_loading)
+            .setCancelable(false)
+            .create()
+        loadingDialog.show()
+
+        // Obtener la lista actual y eliminar el monumento
+        database.reference
+            .child("reservasHoteles")
+            .child(userId)
+            .child(reservaHotel.id)
+            .child("monumentosGuardados")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val monumentosActualizados = mutableListOf<Monumento>()
+
+                    // Obtener todos los monumentos excepto el que queremos eliminar
+                    for (monumentoSnapshot in snapshot.children) {
+                        val monumentoExistente = monumentoSnapshot.getValue(Monumento::class.java)
+                        if (monumentoExistente != null && monumentoExistente.id != monumento.id) {
+                            monumentosActualizados.add(monumentoExistente)
+                        }
+                    }
+
+                    // Guardar la lista actualizada
+                    database.reference
+                        .child("reservasHoteles")
+                        .child(userId)
+                        .child(reservaHotel.id)
+                        .child("monumentosGuardados")
+                        .setValue(monumentosActualizados)
+                        .addOnCompleteListener { task ->
+                            loadingDialog.dismiss()
+
+                            if (task.isSuccessful) {
+                                Toast.makeText(
+                                    this@DetalleReservaHotelActivity,
+                                    "Monumento eliminado exitosamente",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    this@DetalleReservaHotelActivity,
+                                    "Error al eliminar monumento: ${task.exception?.message}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    loadingDialog.dismiss()
+                    Toast.makeText(
+                        this@DetalleReservaHotelActivity,
+                        "Error: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
     private fun setupListeners() {

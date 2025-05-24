@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".monumento.GuardarMonumentoActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header con información del monumento -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/img_monumento"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="16dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/imagen_1"
+                    app:cornerRadius="8dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_nombre_monumento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="NOMBRE DEL MONUMENTO"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_ubicacion_monumento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Ubicación del monumento"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_info_monumento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Selecciona una reserva de hotel para guardar este monumento:"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Título de la sección -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Tus reservas de hotel en esta ubicación:"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- RecyclerView para las reservas -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_reservas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:nestedScrollingEnabled="false"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_reserva_hotel_seleccion" />
+
+        <!-- Mensaje cuando no hay reservas -->
+        <TextView
+            android:id="@+id/tv_no_reservas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:text="No tienes reservas de hotel activas en esta ubicación"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <!-- Botón volver -->
+        <Button
+            android:id="@+id/btn_volver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_background"
+            android:text="VOLVER"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -26,7 +26,7 @@ class DestinoAdapter(
         val favoriteButton: ImageView = itemView.findViewById(R.id.ic_favorite)
 
         init {
-            // Al hacer clic en el destino (todo el ítem)
+
             itemView.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {

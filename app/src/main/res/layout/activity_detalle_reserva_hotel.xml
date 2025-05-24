@@ -349,6 +349,55 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- NUEVA SECCIÓN: Monumentos guardados -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🏛️ Monumentos guardados"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- RecyclerView para mostrar monumentos guardados -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_monumentos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_monumento_guardado" />
+
+                <!-- Texto que se muestra cuando no hay monumentos guardados -->
+                <TextView
+                    android:id="@+id/tv_no_monumentos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No tienes monumentos guardados para esta reserva.\n\nPuedes guardar monumentos desde la sección de explorar lugares."
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:padding="20dp"
+                    android:visibility="gone"
+                    android:drawableTop="@android:drawable/ic_menu_gallery"
+                    android:drawablePadding="12dp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
         <!-- Botones de acción -->
         <LinearLayout
             android:layout_width="match_parent"

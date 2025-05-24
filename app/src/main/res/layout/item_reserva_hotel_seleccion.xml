@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_reserva"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Imagen del hotel -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+
+            <ImageView
+                android:id="@+id/img_hotel_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/imagen_1" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Información de la reserva -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Nombre del hotel y estado -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/tv_nombre_hotel_item"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Hotel Example"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tv_estado_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmada"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_estado_reserva"
+                    android:padding="4dp" />
+
+            </LinearLayout>
+
+            <!-- Destino -->
+            <TextView
+                android:id="@+id/tv_destino_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="París, Francia"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- Fechas -->
+            <TextView
+                android:id="@+id/tv_fechas_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="20/05/2024 - 24/05/2024"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Precio -->
+            <TextView
+                android:id="@+id/tv_precio_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="680€"
+                android:textColor="#2E7D32"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Indicador de selección -->
+        <View
+            android:id="@+id/view_seleccionado"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:background="#2196F3"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Overlay para mostrar que está seleccionado -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#1A2196F3"
+        android:visibility="gone"
+        android:id="@+id/overlay_seleccionado" />
+
+</androidx.cardview.widget.CardView>

@@ -19,10 +19,10 @@ import com.example.nosfuimooss.hotel.ReservarHotel
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.meFaltaHacer.ActividadesActivity
 import com.example.nosfuimooss.navegador.BuscadorActivity
-import com.example.nosfuimooss.meFaltaHacer.Calendario
+import com.example.nosfuimooss.navegador.Calendario
 import com.example.nosfuimooss.navegador.Favoritos
 import com.example.nosfuimooss.navegador.MisViajesActivity
-import com.example.nosfuimooss.meFaltaHacer.MonumentosActivity
+import com.example.nosfuimooss.monumento.MonumentosActivity
 import com.example.nosfuimooss.meFaltaHacer.PlanesActivity
 import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.boleto.VuelosActivity
@@ -281,6 +281,8 @@ class DetalleVuelos : AppCompatActivity() {
 
         findViewById<View>(R.id.monuments_button).setOnClickListener {
             val intent = Intent(this, MonumentosActivity::class.java)
+            val ubicacion = destinationNameText.text.toString().lowercase().capitalize()
+            intent.putExtra("ubicacionDestino", ubicacion)
             startActivity(intent)
         }
 

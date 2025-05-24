@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#F7F7F7"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- TÍTULO -->
+        <TextView
+            android:id="@+id/tituloPagina"
+            android:text="✈️ NosFuimoos"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#E91E63"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp" />
+
+        <!-- TARJETA DE FILTROS -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:elevation="4dp"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:text=" Origen y destino"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:layout_marginBottom="8dp">
+
+                <Spinner
+                    android:id="@+id/spinnerOrigen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerDestino"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp" />
+            </LinearLayout>
+
+            <!-- FECHAS -->
+            <TextView
+                android:text="Seleccionar fechas"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnSeleccionarFechas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Seleccionar fechas" />
+
+            <!-- Estos dos están ocultos al principio -->
+            <Button
+                android:id="@+id/btnFechaInicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fecha de inicio"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnFechaFin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fecha de fin"
+                android:visibility="gone" />
+
+            <!-- PERSONAS -->
+            <TextView
+                android:text=" Personas y clase"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- PERSONAS -->
+                <Button
+                    android:id="@+id/btnMenos"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="-"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <TextView
+                    android:id="@+id/txtCantidadPersonas"
+                    android:text="1"
+                    android:textSize="18sp"
+                    android:padding="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btnMas"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="+"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <!-- ESPACIO -->
+                <Space
+                    android:layout_width="16dp"
+                    android:layout_height="wrap_content" />
+
+                <!-- CLASE -->
+                <Spinner
+                    android:id="@+id/spinnerCategoria"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp" />
+            </LinearLayout>
+
+
+            <!-- IDA Y VUELTA -->
+            <TextView
+                android:text="Tipo de viaje"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <RadioGroup
+                android:id="@+id/radioGroupTipoVuelo"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/rbIda"
+                    android:text="Solo ida"
+                    android:checked="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/rbIdaVuelta"
+                    android:text="Ida y vuelta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RadioGroup>
+            <!-- PRECIO TOTAL -->
+            <TextView
+                android:id="@+id/txtPrecioTotal"
+                android:text="Precio total: 0€"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#FF5722"
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- BOTÓN BUSCAR -->
+        <Button
+            android:id="@+id/btnBuscar"
+            android:text=" Buscar vuelos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#E91E63"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- LISTADO -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerVuelos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+    </LinearLayout>
+
+</LinearLayout>

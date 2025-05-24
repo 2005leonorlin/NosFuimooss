@@ -13,7 +13,7 @@ import com.example.NosFuimooss.R
 import com.example.nosfuimooss.Adapter.CategoriaAdapter
 import com.example.nosfuimooss.Adapter.DestinoAdapter
 import com.example.nosfuimooss.api.RetrofitClient
-import com.example.nosfuimooss.meFaltaHacer.Calendario
+import com.example.nosfuimooss.navegador.Calendario
 import com.example.nosfuimooss.navegador.ElegirVuelo
 import com.example.nosfuimooss.navegador.Favoritos
 import com.example.nosfuimooss.navegador.MisViajesActivity
@@ -100,22 +100,26 @@ class UsuarioLogeadoInicial : AppCompatActivity() {
         fetchDestinosFiltrados(categoriasFijas[0].nombre)
 
         findViewById<ImageView>(R.id.nav_home).setOnClickListener {
-            startActivity(Intent(this, UsuarioLogeadoInicial::class.java))
+            Toast.makeText(this, "Destinos", Toast.LENGTH_SHORT).show()
         }
 
         findViewById<ImageView>(R.id.nav_flight).setOnClickListener {
+            Toast.makeText(this, "Búsqueda de vuelos", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, ElegirVuelo::class.java))
         }
 
         findViewById<ImageView>(R.id.nav_moon).setOnClickListener {
+            Toast.makeText(this, "Mis Viajes", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, MisViajesActivity::class.java))
         }
 
         findViewById<ImageView>(R.id.nav_heart).setOnClickListener {
+            Toast.makeText(this, "Favoritos", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, Favoritos::class.java))
         }
 
         findViewById<ImageView>(R.id.nav_profile).setOnClickListener {
+            Toast.makeText(this, "Perfil", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, UsuarioPerfil::class.java))
         }
 

@@ -13,6 +13,7 @@ import com.example.nosfuimooss.Adapter.DestinoAdapter
 import com.example.nosfuimooss.usuariologeado.DetalleVuelos
 import com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial
 import com.example.nosfuimooss.api.RetrofitClient
+import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.model.Vuelo
 import com.example.nosfuimooss.model.User
 import com.google.firebase.auth.FirebaseAuth
@@ -64,7 +65,7 @@ class Favoritos : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val userNameText = findViewById<TextView>(R.id.user_name_text)
 
-        FirebaseDatabase.getInstance()
+            FirebaseDatabase.getInstance()
             .getReference("users")
             .child(userId)
             .get()
@@ -153,9 +154,29 @@ class Favoritos : AppCompatActivity() {
     }
 
     private fun setupNavigation() {
+
         findViewById<ImageView>(R.id.nav_home).setOnClickListener {
+            Toast.makeText(this, "Destinos", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, UsuarioLogeadoInicial::class.java))
-            finish()
+        }
+        findViewById<ImageView>(R.id.nav_flight).setOnClickListener {
+            Toast.makeText(this, "Búsqueda de vuelos", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, ElegirVuelo::class.java))
+        }
+        findViewById<ImageView>(R.id.nav_moon).setOnClickListener {
+            Toast.makeText(this, "Mis Viajes", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MisViajesActivity::class.java))
+        }
+        findViewById<ImageView>(R.id.nav_heart).setOnClickListener {
+            Toast.makeText(this, "Favoritos", Toast.LENGTH_SHORT).show()
+
+        }
+        findViewById<ImageView>(R.id.nav_profile).setOnClickListener {
+            Toast.makeText(this, "Perfil", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, UsuarioPerfil::class.java))
+        }
+        findViewById<ImageView>(R.id.ic_calendar).setOnClickListener {
+            startActivity(Intent(this, Calendario::class.java))
         }
     }
 }

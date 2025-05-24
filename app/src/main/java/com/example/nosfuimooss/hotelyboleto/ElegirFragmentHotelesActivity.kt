@@ -1,33 +1,33 @@
-package com.example.nosfuimooss.hotel
+package com.example.nosfuimooss.hotelyboleto
 
-import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.widget.Filter
-
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
-
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.HotelAdapter
+import com.example.nosfuimooss.Adapter.ElegirHotelAdapter
 import com.example.nosfuimooss.api.RetrofitClient
-
+import com.example.nosfuimooss.hotel.DetalleHotelActivity
+import com.example.nosfuimooss.hotel.MapaActivity
 import com.example.nosfuimooss.model.Hotel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,8 +40,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-
-class ReservarHotel : AppCompatActivity() {
+class ElegirFragmentHotelesActivity : AppCompatActivity() {
     private lateinit var etDestino: AutoCompleteTextView
     private lateinit var btnClearDestino: ImageButton
     private lateinit var btnBuscarHoteles: Button
@@ -55,19 +54,20 @@ class ReservarHotel : AppCompatActivity() {
     private var fechaSalida: Date? = null
     private var adultos = 1
     private var ninos = 0
-    private lateinit var adapter: HotelAdapter
+    private lateinit var adapter: ElegirHotelAdapter
     private var allHoteles: List<Hotel> = emptyList()
-    private var ubicacionesDisponibles: MutableSet<String> = mutableSetOf()
 
+    // Para el autocompletado
     private lateinit var autoCompleteAdapter: ArrayAdapter<String>
     private var ubicacionesUnicas: Set<String> = emptySet()
+
     // Variable para controlar el retraso en filtrado
     private var filterTextChangedJob: kotlinx.coroutines.Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        setContentView(R.layout.activity_reservar_hotel)
+        setContentView(R.layout.activity_elegir_fragment_hoteles)
 
         etDestino = findViewById(R.id.etDestino)
         btnClearDestino = findViewById(R.id.btnClearDestino)
@@ -79,7 +79,9 @@ class ReservarHotel : AppCompatActivity() {
         tvFechaEntrada = findViewById(R.id.tvFechaEntrada)
         tvFechaSalida = findViewById(R.id.tvFechaSalida)
 
+
         setupAutoComplete()
+
         tvFechaEntrada.setOnClickListener {
             mostrarDatePicker(true)
         }
@@ -88,14 +90,13 @@ class ReservarHotel : AppCompatActivity() {
             mostrarDatePicker(false)
         }
 
-
         rvHoteles.layoutManager = LinearLayoutManager(this)
 
-        // Aquí cambiamos el lambda para abrir la actividad de detalle en lugar de mostrar un Toast
-        adapter = HotelAdapter(emptyList(), { hotel ->
+        // Configurar el adapter para abrir la actividad de detalle
+        adapter = ElegirHotelAdapter(emptyList(), { hotel ->
             if (fechaEntrada == null || fechaSalida == null) {
                 Toast.makeText(this, "Selecciona primero las fechas de entrada y salida", Toast.LENGTH_SHORT).show()
-                return@HotelAdapter
+                return@ElegirHotelAdapter
             }
             // Calculamos el precio final con el número actual de personas
             val totalPersonas = adultos + ninos
@@ -118,6 +119,8 @@ class ReservarHotel : AppCompatActivity() {
         }, adultos, ninos)
 
         rvHoteles.adapter = adapter
+
+        // Configurar botones de adultos
         findViewById<ImageButton>(R.id.btnIncreaseAdultos).setOnClickListener {
             adultos++
             findViewById<TextView>(R.id.tvAdultos).text = adultos.toString()
@@ -132,7 +135,7 @@ class ReservarHotel : AppCompatActivity() {
             }
         }
 
-        // Botones para niños
+        // Configurar botones de niños
         findViewById<ImageButton>(R.id.btnIncreaseNinos).setOnClickListener {
             ninos++
             findViewById<TextView>(R.id.tvNinos).text = ninos.toString()
@@ -146,6 +149,8 @@ class ReservarHotel : AppCompatActivity() {
                 adapter.actualizarCantidadPersonas(adultos, ninos)
             }
         }
+
+        // Configurar botón del mapa
         findViewById<Button>(R.id.btnMapa).setOnClickListener {
             if (fechaEntrada == null || fechaSalida == null) {
                 Toast.makeText(this, "Selecciona fecha de entrada y salida para ver el mapa", Toast.LENGTH_SHORT).show()
@@ -170,7 +175,7 @@ class ReservarHotel : AppCompatActivity() {
 
                     if (hotelesConCoordenadas.isEmpty()) {
                         Toast.makeText(
-                            this@ReservarHotel,
+                            this@ElegirFragmentHotelesActivity,
                             "No hay hoteles con coordenadas para mostrar en el mapa",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -178,7 +183,7 @@ class ReservarHotel : AppCompatActivity() {
                     }
 
                     // Iniciar la actividad del mapa con los datos filtrados
-                    val intent = Intent(this@ReservarHotel, MapaActivity::class.java)
+                    val intent = Intent(this@ElegirFragmentHotelesActivity, MapaActivity::class.java)
                     intent.putExtra("hoteles", ArrayList(hotelesFiltrados))
 
                     // Pasar datos adicionales del usuario
@@ -193,7 +198,7 @@ class ReservarHotel : AppCompatActivity() {
             }
         }
 
-        // Capitalizar automáticamente cada palabra al escribir con manejo de corrutinas
+        // TextWatcher para el campo de destino con autocompletado
         etDestino.addTextChangedListener(object : TextWatcher {
             private var isEditing = false
 
@@ -203,12 +208,15 @@ class ReservarHotel : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 if (isEditing || s == null) return
 
-                val capitalized = s.toString()
+                val texto = s.toString()
+
+                // Capitalizar primera letra de cada palabra
+                val capitalized = texto
                     .lowercase()
                     .split(" ")
                     .joinToString(" ") { it.replaceFirstChar { c -> c.uppercaseChar() } }
 
-                if (s.toString() != capitalized) {
+                if (texto != capitalized) {
                     isEditing = true
                     etDestino.setText(capitalized)
                     etDestino.setSelection(capitalized.length)
@@ -218,14 +226,16 @@ class ReservarHotel : AppCompatActivity() {
                 if (capitalized.isNotEmpty()) {
                     btnClearDestino.visibility = View.VISIBLE
 
-                    // Cancelar el trabajo anterior si existe
+                    // Cancelar trabajo anterior de filtrado
                     filterTextChangedJob?.cancel()
 
-                    // Iniciar un nuevo trabajo con retraso para evitar filtrados excesivos
+                    // Programar nuevo filtrado con retraso
                     filterTextChangedJob = lifecycleScope.launch {
-                        kotlinx.coroutines.delay(300) // Pequeño retraso para evitar filtrar en cada pulsación
+                        kotlinx.coroutines.delay(300) // Reducido para mejor experiencia
                         filtrarYMostrarHoteles(capitalized)
                     }
+
+                    // Actualizar sugerencias de autocompletado
                     actualizarSugerenciasAutocompletado(capitalized)
                 } else {
                     btnClearDestino.visibility = View.GONE
@@ -236,6 +246,8 @@ class ReservarHotel : AppCompatActivity() {
                 }
             }
         })
+
+        // Configurar listener para selección de autocompletado
         etDestino.setOnItemClickListener { _, _, position, _ ->
             val selectedUbicacion = autoCompleteAdapter.getItem(position)
             selectedUbicacion?.let { ubicacion ->
@@ -248,6 +260,8 @@ class ReservarHotel : AppCompatActivity() {
             val destino = etDestino.text.toString().trim()
             if (destino.isEmpty()) {
                 Toast.makeText(this, "Por favor, introduce un destino", Toast.LENGTH_SHORT).show()
+            } else if (fechaEntrada == null || fechaSalida == null) {
+                Toast.makeText(this, "Por favor, selecciona fecha de entrada y salida", Toast.LENGTH_SHORT).show()
             } else {
                 buscarHotelesPorDestino(destino)
             }
@@ -260,14 +274,15 @@ class ReservarHotel : AppCompatActivity() {
                 tvResultsCount.text = "Se encontraron ${allHoteles.size} hoteles"
             }
         }
+
         val btnOrdenar: Button = findViewById(R.id.btnOrdenar)
         btnOrdenar.setOnClickListener {
             mostrarOpcionesOrden()
         }
 
         cargarTodosLosHoteles()
-
     }
+
     private fun setupAutoComplete() {
         // Configurar el adapter para autocompletado
         autoCompleteAdapter = ArrayAdapter(
@@ -399,7 +414,6 @@ class ReservarHotel : AppCompatActivity() {
         datePickerDialog.datePicker.minDate = System.currentTimeMillis()
 
         datePickerDialog.show()
-
     }
 
     private fun actualizarNumeroDeNoches() {
@@ -432,7 +446,6 @@ class ReservarHotel : AppCompatActivity() {
                         // Procesar datos en segundo plano
                         withContext(Dispatchers.Default) {
                             allHoteles = hoteles
-
                         }
 
                         // Actualizar UI en hilo principal
@@ -451,9 +464,9 @@ class ReservarHotel : AppCompatActivity() {
                         }
                     }
                 } else {
-                    Log.e("ReservarHotel", "Error: ${response.code()} - ${response.message()}")
+                    Log.e("ElegirFragmentHoteles", "Error: ${response.code()} - ${response.message()}")
                     Toast.makeText(
-                        this@ReservarHotel,
+                        this@ElegirFragmentHotelesActivity,
                         "Error al cargar hoteles: ${response.message()}",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -463,76 +476,15 @@ class ReservarHotel : AppCompatActivity() {
 
             override fun onFailure(call: Call<List<Hotel>>, t: Throwable) {
                 progressBar.visibility = View.GONE
-                Log.e("ReservarHotel", "Error de red: ${t.message}", t)
+                Log.e("ElegirFragmentHoteles", "Error de red: ${t.message}", t)
                 Toast.makeText(
-                    this@ReservarHotel,
+                    this@ElegirFragmentHotelesActivity,
                     "Error de red: ${t.message}",
                     Toast.LENGTH_SHORT
                 ).show()
                 tvResultsCount.text = "Error de conexión"
             }
         })
-    }
-
-    private fun configureAutoComplete() {
-        class CaseInsensitiveString(val original: String) {
-            override fun toString(): String = original
-            override fun equals(other: Any?): Boolean {
-                return (other as? CaseInsensitiveString)?.original.equals(original, ignoreCase = true)
-            }
-            override fun hashCode(): Int = original.lowercase().hashCode()
-        }
-
-        lifecycleScope.launch {
-            val ubicacionesList = withContext(Dispatchers.Default) {
-                ubicacionesDisponibles.map { CaseInsensitiveString(it) }
-                    .sortedBy { it.original }
-                    .toMutableList()
-            }
-
-            withContext(Dispatchers.Main) {
-                val autoCompleteAdapter = object : ArrayAdapter<CaseInsensitiveString>(
-                    this@ReservarHotel,
-                    android.R.layout.simple_dropdown_item_1line,
-                    ubicacionesList
-                ) {
-                    override fun getFilter(): Filter {
-                        return object : Filter() {
-                            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                                val results = FilterResults()
-                                if (constraint.isNullOrEmpty()) {
-                                    results.values = ubicacionesList
-                                    results.count = ubicacionesList.size
-                                } else {
-                                    val filterPattern = constraint.toString().lowercase().trim()
-                                    val filtered = ubicacionesList.filter {
-                                        it.original.lowercase().contains(filterPattern)
-                                    }
-                                    results.values = filtered
-                                    results.count = filtered.size
-                                }
-                                return results
-                            }
-
-                            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                                if (results != null && results.count > 0) {
-                                    clear()
-                                    addAll(results.values as List<CaseInsensitiveString>)
-                                    notifyDataSetChanged()
-                                }
-                            }
-                        }
-                    }
-                }
-
-                etDestino.setAdapter(autoCompleteAdapter)
-                etDestino.threshold = 1
-                etDestino.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-                    val ubicacionSeleccionada = autoCompleteAdapter.getItem(position)?.original ?: ""
-                    buscarHotelesPorDestino(ubicacionSeleccionada)
-                }
-            }
-        }
     }
 
     private fun filtrarYMostrarHoteles(texto: String) {
@@ -579,7 +531,7 @@ class ReservarHotel : AppCompatActivity() {
                 tvResultsCount.text = "Se encontraron ${resultados.size} hoteles para \"$destino\""
 
                 if (resultados.isEmpty()) {
-                    Toast.makeText(this@ReservarHotel, "No hay hoteles disponibles para \"$destino\"", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@ElegirFragmentHotelesActivity, "No hay hoteles disponibles para \"$destino\"", Toast.LENGTH_SHORT)
                         .show()
                 }
             }

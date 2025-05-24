@@ -19,6 +19,21 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name="com.example.nosfuimooss.monumento.GuardarMonumentoActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.monumento.DetalleMonumentoActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.monumento.MapaMonumentosActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotelyboleto.ElegirFragmentVuelosActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.hotelyboleto.ElegirFragmentHotelesActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.nosfuimooss.misvuelos.DetalleReservaHotelActivity"
             android:exported="false" />
         <activity
@@ -70,7 +85,7 @@
             android:name="com.example.nosfuimooss.meFaltaHacer.PlanesActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.MonumentosActivity"
+            android:name="com.example.nosfuimooss.monumento.MonumentosActivity"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.meFaltaHacer.ActividadesActivity"
@@ -82,7 +97,7 @@
             android:name="com.example.nosfuimooss.navegador.BuscadorActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.Calendario"
+            android:name="com.example.nosfuimooss.navegador.Calendario"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil"

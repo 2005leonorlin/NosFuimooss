@@ -8,5 +8,6 @@
     <color name="active_indicator">#FF0000</color>
     <color name="inactive_indicator">#CCCCCC</color>
     <color name="disabled_text">#757575</color>
+    <color name="light_blue">#E3F2FD</color>
 
 </resources>

@@ -7,6 +7,7 @@ import android.os.Looper
 import android.widget.Button
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.NosFuimooss.R
@@ -63,6 +64,7 @@ class DetalleHotelActivity : AppCompatActivity() {
         ratingBar = findViewById(R.id.ratingBar)
         vpHotelImages = findViewById(R.id.vpHotelImages)
         btnReservar = findViewById(R.id.btnReservar)
+
 
         // Si has agregado un TabLayout para los indicadores de posición
         tabLayout = findViewById(R.id.tabLayoutIndicator)
@@ -122,6 +124,10 @@ class DetalleHotelActivity : AppCompatActivity() {
 
         // Botón reservar - MODIFICADO para abrir la actividad ElijeTuEstancia
         btnReservar.setOnClickListener {
+            if (!hotel.disponible) {
+                Toast.makeText(this, "Este hotel no está disponible", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val intentEstancia = Intent(this, ElijeTuEstanciaActivity::class.java).apply {
                 putExtra("hotel", hotel)
                 putExtra("adultos", adultos)

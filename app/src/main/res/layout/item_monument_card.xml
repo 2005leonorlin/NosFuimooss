@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:backgroundTint="@android:color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Imagen del monumento -->
+        <ImageView
+            android:id="@+id/monument_image"
+            android:layout_width="match_parent"
+            android:layout_height="251dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/imagen_1" />
+
+        <!-- Contenido de la tarjeta -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Header con título -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/monument_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="UNIVERSAL STUDIOS JAPAN"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:letterSpacing="0.05" />
+
+            </LinearLayout>
+
+            <!-- Rating con estrellas -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/star_1"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_star_outline"
+                    android:layout_marginEnd="2dp" />
+
+                <ImageView
+                    android:id="@+id/star_2"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_star_outline"
+                    android:layout_marginEnd="2dp" />
+
+                <ImageView
+                    android:id="@+id/star_3"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_star_outline"
+                    android:layout_marginEnd="2dp" />
+
+                <ImageView
+                    android:id="@+id/star_4"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_star_outline"
+                    android:layout_marginEnd="2dp" />
+
+                <ImageView
+                    android:id="@+id/star_5"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_star_outline"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/rating_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.5"
+                    android:textSize="12sp"
+                    android:textColor="#666666" />
+
+            </LinearLayout>
+
+            <!-- Descripción -->
+            <TextView
+                android:id="@+id/monument_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Es uno de los cuatro parques temáticos Universal Studios, es propiedad y está operado por USJ Co., Ltd. El parque es similar al de Universal Orlando Resort, ya que contiene muchos de los mismos paseos. El área total es de 54 hectáreas."
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:lineSpacingMultiplier="1.2" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
