@@ -25,7 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.HotelAdapter
+import com.example.nosfuimooss.Adapter.hotel.HotelAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 
 import com.example.nosfuimooss.model.Hotel

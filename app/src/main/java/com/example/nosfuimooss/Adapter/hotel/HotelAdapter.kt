@@ -1,4 +1,4 @@
-package com.example.nosfuimooss.Adapter
+package com.example.nosfuimooss.Adapter.hotel
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +12,14 @@ import com.bumptech.glide.Glide
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.model.Hotel
 
-class ElegirHotelAdapter(
+class HotelAdapter(
     private var hoteles: List<Hotel>,
     private val onClick: (Hotel) -> Unit,
     private var adultos: Int = 1,
     private var ninos: Int = 0
-) : RecyclerView.Adapter<ElegirHotelAdapter.ElegirHotelViewHolder>() {
+) : RecyclerView.Adapter<HotelAdapter.HotelViewHolder>() {
 
-    inner class ElegirHotelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class HotelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivHotelImage: ImageView = view.findViewById(R.id.ivHotelImage)
         val tvHotelName: TextView = view.findViewById(R.id.tvHotelName)
         val tvLocation: TextView = view.findViewById(R.id.tvLocation)
@@ -35,12 +35,12 @@ class ElegirHotelAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ElegirHotelViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel, parent, false)
-        return ElegirHotelViewHolder(view)
+        return HotelViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ElegirHotelViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HotelViewHolder, position: Int) {
         val hotel = hoteles[position]
 
         holder.tvHotelName.text = hotel.nombre
@@ -66,12 +66,7 @@ class ElegirHotelAdapter(
             .placeholder(R.drawable.placeholder_image)
             .into(holder.ivHotelImage)
 
-
-
-
-        // Configurar el evento click específico para el botón "Ver hotel"
         holder.btnReservar.setOnClickListener {
-
             onClick(hotel)
         }
     }

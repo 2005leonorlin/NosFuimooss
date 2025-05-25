@@ -10,11 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.MonumentosAdapter
+import com.example.nosfuimooss.Adapter.monumento.MonumentosAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.boleto.VuelosActivity
 import com.example.nosfuimooss.navegador.Calendario
-import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
+import com.example.nosfuimooss.navegador.UsuarioPerfil
 import com.example.nosfuimooss.model.Monumento
 import com.example.nosfuimooss.model.User
 import com.example.nosfuimooss.navegador.Favoritos

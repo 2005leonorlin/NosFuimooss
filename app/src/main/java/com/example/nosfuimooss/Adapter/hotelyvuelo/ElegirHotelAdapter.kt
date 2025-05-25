@@ -1,4 +1,4 @@
-package com.example.nosfuimooss.Adapter
+package com.example.nosfuimooss.Adapter.hotelyvuelo
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +12,14 @@ import com.bumptech.glide.Glide
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.model.Hotel
 
-class HotelAdapter(
+class ElegirHotelAdapter(
     private var hoteles: List<Hotel>,
     private val onClick: (Hotel) -> Unit,
     private var adultos: Int = 1,
     private var ninos: Int = 0
-) : RecyclerView.Adapter<HotelAdapter.HotelViewHolder>() {
+) : RecyclerView.Adapter<ElegirHotelAdapter.ElegirHotelViewHolder>() {
 
-    inner class HotelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ElegirHotelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivHotelImage: ImageView = view.findViewById(R.id.ivHotelImage)
         val tvHotelName: TextView = view.findViewById(R.id.tvHotelName)
         val tvLocation: TextView = view.findViewById(R.id.tvLocation)
@@ -35,12 +35,12 @@ class HotelAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ElegirHotelViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_hotel, parent, false)
-        return HotelViewHolder(view)
+        return ElegirHotelViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: HotelViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ElegirHotelViewHolder, position: Int) {
         val hotel = hoteles[position]
 
         holder.tvHotelName.text = hotel.nombre
@@ -66,7 +66,12 @@ class HotelAdapter(
             .placeholder(R.drawable.placeholder_image)
             .into(holder.ivHotelImage)
 
+
+
+
+        // Configurar el evento click específico para el botón "Ver hotel"
         holder.btnReservar.setOnClickListener {
+
             onClick(hotel)
         }
     }

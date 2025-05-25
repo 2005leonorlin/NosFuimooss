@@ -9,11 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.DestinoAdapter
+import com.example.nosfuimooss.Adapter.vuelo.DestinoAdapter
 import com.example.nosfuimooss.usuariologeado.DetalleVuelos
 import com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial
 import com.example.nosfuimooss.api.RetrofitClient
-import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.model.Vuelo
 import com.example.nosfuimooss.model.User
 import com.google.firebase.auth.FirebaseAuth
@@ -65,7 +64,7 @@ class Favoritos : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val userNameText = findViewById<TextView>(R.id.user_name_text)
 
-            FirebaseDatabase.getInstance()
+        FirebaseDatabase.getInstance()
             .getReference("users")
             .child(userId)
             .get()

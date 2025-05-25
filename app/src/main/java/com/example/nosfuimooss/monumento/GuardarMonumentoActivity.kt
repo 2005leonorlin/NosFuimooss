@@ -6,16 +6,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.ReservasSeleccionAdapter
+import com.example.nosfuimooss.Adapter.boleto.ReservasSeleccionAdapter
 import com.example.nosfuimooss.model.Monumento
 import com.example.nosfuimooss.usuario.ReservaHotel
 import com.google.firebase.auth.FirebaseAuth

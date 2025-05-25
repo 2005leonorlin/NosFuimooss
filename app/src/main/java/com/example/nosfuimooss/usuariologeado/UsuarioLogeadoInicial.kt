@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.CategoriaAdapter
-import com.example.nosfuimooss.Adapter.DestinoAdapter
+import com.example.nosfuimooss.Adapter.vuelo.CategoriaAdapter
+import com.example.nosfuimooss.Adapter.vuelo.DestinoAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.navegador.Calendario
 import com.example.nosfuimooss.navegador.ElegirVuelo
 import com.example.nosfuimooss.navegador.Favoritos
 import com.example.nosfuimooss.navegador.MisViajesActivity
-import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
+import com.example.nosfuimooss.navegador.UsuarioPerfil
 import com.example.nosfuimooss.model.Categoria
 import com.example.nosfuimooss.model.Vuelo
 import com.example.nosfuimooss.model.User

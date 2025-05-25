@@ -100,7 +100,7 @@
             android:name="com.example.nosfuimooss.navegador.Calendario"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil"
+            android:name="com.example.nosfuimooss.navegador.UsuarioPerfil"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.navegador.Favoritos"

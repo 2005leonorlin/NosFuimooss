@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nosfuimooss.sesion.LoginActivity
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.CategoriaAdapter
-import com.example.nosfuimooss.Adapter.DestinoAdapter
+import com.example.nosfuimooss.Adapter.vuelo.CategoriaAdapter
+import com.example.nosfuimooss.Adapter.vuelo.DestinoAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.model.Categoria
 import com.example.nosfuimooss.model.Vuelo

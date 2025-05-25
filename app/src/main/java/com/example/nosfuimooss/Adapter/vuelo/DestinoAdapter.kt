@@ -1,4 +1,4 @@
-package com.example.nosfuimooss.Adapter
+package com.example.nosfuimooss.Adapter.vuelo
 
 import android.view.LayoutInflater
 import android.view.View

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nosfuimooss.usuariologeado.DetalleVuelos
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.DestinoAdapter
+import com.example.nosfuimooss.Adapter.vuelo.DestinoAdapter
 import com.example.nosfuimooss.model.Vuelo
 
 

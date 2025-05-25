@@ -24,7 +24,7 @@ import com.example.nosfuimooss.navegador.Favoritos
 import com.example.nosfuimooss.navegador.MisViajesActivity
 import com.example.nosfuimooss.monumento.MonumentosActivity
 import com.example.nosfuimooss.meFaltaHacer.PlanesActivity
-import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
+import com.example.nosfuimooss.navegador.UsuarioPerfil
 import com.example.nosfuimooss.boleto.VuelosActivity
 import com.example.nosfuimooss.model.Vuelo
 import com.google.firebase.auth.FirebaseAuth

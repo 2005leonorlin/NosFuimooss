@@ -13,7 +13,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.hotelyboleto.ElegirFragmentHotelesActivity
 import com.example.nosfuimooss.hotelyboleto.ElegirFragmentVuelosActivity
-import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase

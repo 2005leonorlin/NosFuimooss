@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
@@ -19,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.Adapter.ElegirVuelosAdapter
+import com.example.nosfuimooss.Adapter.hotelyvuelo.ElegirVuelosAdapter
 import com.example.nosfuimooss.api.RetrofitClient
 import com.example.nosfuimooss.boleto.SeleccionarBoletoIdaActivity
 import com.example.nosfuimooss.model.Boleto

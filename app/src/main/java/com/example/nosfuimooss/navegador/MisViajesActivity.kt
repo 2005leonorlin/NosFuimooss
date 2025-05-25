@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.NosFuimooss.R
-import com.example.nosfuimooss.meFaltaHacer.UsuarioPerfil
 import com.example.nosfuimooss.misvuelos.BoletosFragment
 import com.example.nosfuimooss.misvuelos.HotelesFragment
 import com.example.nosfuimooss.usuariologeado.UsuarioLogeadoInicial
