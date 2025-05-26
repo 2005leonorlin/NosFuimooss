@@ -27,5 +27,6 @@
     <string name="foto_destino">foto</string>
     <string name="Alojamiento">Hoteles\n</string>
     <string name="imagen_del_hotel">foto hotel\n</string>
+    <string name="user_avatar">useravatar</string>
 
 </resources>

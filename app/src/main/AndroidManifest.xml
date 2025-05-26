@@ -19,6 +19,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name="com.example.nosfuimooss.actividades.ConfirmacionActividadActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.actividades.MapaActividadesActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.nosfuimooss.actividades.DetalleActividadActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.nosfuimooss.monumento.GuardarMonumentoActivity"
             android:exported="false" />
         <activity
@@ -88,7 +97,7 @@
             android:name="com.example.nosfuimooss.monumento.MonumentosActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.nosfuimooss.meFaltaHacer.ActividadesActivity"
+            android:name="com.example.nosfuimooss.actividades.ActividadesActivity"
             android:exported="false" />
         <activity
             android:name="com.example.nosfuimooss.navegador.MisViajesActivity"

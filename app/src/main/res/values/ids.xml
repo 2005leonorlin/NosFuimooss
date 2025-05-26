@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="btnMapa" type="id" />
-
-    <item name="ivSuggestionIcon" type="id" />
     <item name="btn_next_month" type="id" />
     <item name="tv_month_year" type="id" />
     <item name="btn_prev_month" type="id" />
     <item name="calendar_header" type="id" />
-    <item name="calendar_title" type="id" />
 </resources>

@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.example.NosFuimooss.R
 import com.example.nosfuimooss.hotel.ReservarHotel
 import com.example.nosfuimooss.api.RetrofitClient
-import com.example.nosfuimooss.meFaltaHacer.ActividadesActivity
+import com.example.nosfuimooss.actividades.ActividadesActivity
 import com.example.nosfuimooss.navegador.BuscadorActivity
 import com.example.nosfuimooss.navegador.Calendario
 import com.example.nosfuimooss.navegador.Favoritos
@@ -276,6 +276,8 @@ class DetalleVuelos : AppCompatActivity() {
 
         findViewById<View>(R.id.activities_button).setOnClickListener {
             val intent = Intent(this, ActividadesActivity::class.java)
+            val ubicacion = destinationNameText.text.toString().lowercase().capitalize()
+            intent.putExtra("ubicacionDestino", ubicacion)
             startActivity(intent)
         }
 

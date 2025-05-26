@@ -9,5 +9,9 @@
     <color name="inactive_indicator">#CCCCCC</color>
     <color name="disabled_text">#757575</color>
     <color name="light_blue">#E3F2FD</color>
+    <color name="primary_color">#F6C6D6</color>
+    <color name="text_secondary">#000000</color>
+    <color name="gray_text">#2A2A2A</color>
+
 
 </resources>

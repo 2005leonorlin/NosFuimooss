@@ -2,5 +2,7 @@
 <resources>
     <dimen name="indicator_size">8dp</dimen>
     <dimen name="indicator_margin">4dp</dimen>
+    <dimen name="star_size">16dp</dimen>
+    <dimen name="calendar_item_spacing">2dp</dimen>
 
 </resources>

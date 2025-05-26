@@ -27,19 +27,25 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.registerButton.setOnClickListener {
             val name = binding.nameInput.text.toString()
+            val apellido = binding.apellidoInput.text.toString() // Agregar este campo
             val email = binding.emailInput.text.toString()
             val password = binding.passwordInput.text.toString()
             val confirmPassword = binding.confirmPasswordInput.text.toString()
 
-            if (validateInput(name, email, password, confirmPassword)) {
-                registerUser(email, password, name, apellido = "") // Apellido no se usa en este caso
+            if (validateInput(name, apellido, email, password, confirmPassword)) {
+                registerUser(email, password, name, apellido)
             }
         }
     }
 
-    private fun validateInput(name: String, email: String, password: String, confirmPassword: String): Boolean {
+    private fun validateInput(name: String, apellido: String, email: String, password: String, confirmPassword: String): Boolean {
         if (TextUtils.isEmpty(name)) {
-            showError("El campo Nombre y Apellido no puede estar vacío")
+            showError("El campo Nombre no puede estar vacío")
+            return false
+        }
+
+        if (TextUtils.isEmpty(apellido)) {
+            showError("El campo Apellido no puede estar vacío")
             return false
         }
 

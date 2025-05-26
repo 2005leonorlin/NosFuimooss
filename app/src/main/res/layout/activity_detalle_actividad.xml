@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_layout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header con imagen -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp">
+
+                <ImageView
+                    android:id="@+id/iv_actividad_imagen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/imagen_3" />
+
+                <!-- Favorite button -->
+                <ImageView
+                    android:id="@+id/btn_favorite"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginEnd="13dp"
+                    android:background="@drawable/circle_white_background"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_megusta"
+                    app:tint="@color/black" />
+
+            </RelativeLayout>
+
+            <!-- Contenido principal -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Título y rating -->
+                <TextView
+                    android:id="@+id/tv_titulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Excursión a pie por Osaka (Castillo, Dotonbori)"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_grupo_tipo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="GRUPO O PRIVADO"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+
+                <!-- Rating -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/ll_estrellas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <!-- Las estrellas se añadirán dinámicamente -->
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_opiniones"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="390 Opiniones"
+                        android:textColor="#666666"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <!-- Precio -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Desde"
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_precio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$9.33 €"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Cancelación gratuita -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/pulgares"
+                        app:tint="#4CAF50" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Cancelación gratuita hasta 24 horas antes"
+                        android:textColor="#4CAF50"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <!-- Seleccionar fecha y pasajeros -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Seleccionar fecha y pasajeros"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!-- Card container para fecha y pasajeros -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/section_background"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Selector de fechas mejorado -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📅 Fecha"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btn_seleccionar_fecha"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:drawablePadding="12dp"
+                            android:text="Seleccionar fecha"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <!-- Línea divisoria -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="#E0E0E0" />
+
+                    <!-- Selector de pasajeros -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="👥 Pasajeros"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/border_rounded"
+                            android:gravity="center_vertical"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Número de pasajeros"
+                                android:textColor="#666666"
+                                android:textSize="16sp" />
+
+                            <!-- Botón decrementar -->
+                            <ImageView
+                                android:id="@+id/btn_decrementar"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_marginEnd="12dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="8dp"
+                                android:src="@drawable/fecha_abajo"
+                                app:tint="#666666" />
+
+                            <!-- Número de pasajeros -->
+                            <TextView
+                                android:id="@+id/tv_num_pasajeros"
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="1"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <!-- Botón incrementar -->
+                            <ImageView
+                                android:id="@+id/btn_incrementar"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:layout_marginStart="12dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="8dp"
+                                android:src="@drawable/fecha_arriba"
+                                app:tint="#666666" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Precio por pasajero -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="💰 Precio por persona"
+                            android:textColor="#666666"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_precio_individual"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$9.33 €"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Duración -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/tiempo"
+                        app:tint="#666666" />
+
+                    <TextView
+                        android:id="@+id/tv_duracion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10 hours"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <!-- Secciones expandibles -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical">
+
+                    <!-- Resumen del viaje -->
+                    <LinearLayout
+                        android:id="@+id/section_resumen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/section_background"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Resumen del viaje"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/iv_arrow_resumen"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/fecha_abajo"
+                                app:tint="#666666" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_resumen_contenido"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="Disfrute de un recorrido culturalmente enriquecedor por los lugares más famosos de Kioto, como el templo Fushimi Inari y los sitios del Patrimonio Mundial de la UNESCO como el templo Kiyomizu-dera, el templo Kinkaku-ji y Arashiyama. En solo un día, puedes ver el resultado de cientos de años de historia... Ver más"
+                            android:textColor="#666666"
+                            android:textSize="14sp"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <!-- Qué está incluido -->
+                    <LinearLayout
+                        android:id="@+id/section_incluido"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/section_background"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Qué está incluido"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/iv_arrow_incluido"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/fecha_abajo"
+                            app:tint="#666666" />
+
+                    </LinearLayout>
+
+                    <!-- Punto de recogida -->
+                    <LinearLayout
+                        android:id="@+id/section_recogida"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/section_background"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Punto de recogida"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/iv_arrow_recogida"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/fecha_abajo"
+                            app:tint="#666666" />
+
+                    </LinearLayout>
+
+                    <!-- Información -->
+                    <LinearLayout
+                        android:id="@+id/section_informacion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/section_background"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Información"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/iv_arrow_informacion"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/fecha_abajo"
+                            app:tint="#666666" />
+
+                    </LinearLayout>
+
+                    <!-- Política de cancelación -->
+                    <LinearLayout
+                        android:id="@+id/section_cancelacion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/section_background"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Política de cancelación"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/iv_arrow_cancelacion"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/fecha_abajo"
+                            app:tint="#666666" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Padding bottom para evitar overlap con bottom bar -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Bottom bar fijo con precio dinámico -->
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_total_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total (1 persona)"
+                android:textColor="#666666"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_total_precio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$9.33 €"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_reservar"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_reserve_background"
+            android:text="RESERVAR"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>
